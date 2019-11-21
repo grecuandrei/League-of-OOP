@@ -1,16 +1,14 @@
-package com.main;
+package main;
 
-import com.heroes.Hero;
-import com.heroes.Pyromancer;
-import com.heroes.Wizard;
+import java.io.File;
 
 public class Main {
 
     public static void main(String[] args) {
-        Pyromancer p = new Pyromancer();
-        Wizard w = new Wizard();
-        System.out.println(p.getHp() + " " + w.getHp());
-        p.attack(w);
-        System.out.println(p.getHp() + " " + w.getHp() + w.isDead() + p.getLevel());
+        File inputFile = new File(args[0]);
+        File outputFile = new File(args[1]);
+        
+        main.Game game = new main.Game();
+        game.playGame(inputFile, outputFile);
     }
 }
