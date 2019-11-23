@@ -1,92 +1,101 @@
-package com.heroes;
-
-import com.map.Terrain;
+package heroes;
 
 public class Knight extends Hero {
-    public Knight() {
+
+    public Knight(int x, int y) {
+        super(x, y);
         setHp(900);
+        setBaseHP(900);
         setMultiplier(30);
     }
 
+    @Override
+    public String getName() {
+        return "K";
+    }
+
+    public float acceptAttack(Hero h) {
+        return h.attack(this);
+    }
+    
+    
+    // todo re-check it Execute
     public float attackExecute(Hero h) {
         float dmg = 200 + 30 * getLevel(), hpLimit;
-        if (h.getLevel() <= 40) {
-            hpLimit = 0.2f * h.getBaseHP() + h.getLevel() / 100f;
+        if (getTerrainUnderFeet() == 'L') {
+            dmg = dmg * 1.15f;
+        }
+        if (0.2f * h.getBaseHP() + 0.01f *h.getLevel() <= 0.4f) {
+            hpLimit = 0.2f * h.getBaseHP() + 0.01f *h.getLevel();
         } else {
-            hpLimit = 0.2f * h.getBaseHP() + 40f / 100f;
+            hpLimit = 0.2f * h.getBaseHP() + 0.4f;
         }
         if (hpLimit - h.getHp() >= 0) {
             h.setDead(true);
         }
-        
-//        if (getTerrainType() = Terrain.LAND) {
-//            dmg += dmg * 0.15;
-//        }
-        return dmg;
+        return Math.round(dmg);
     }
 
-    public float attackSlam(Hero h) {
+    public float attackSlam() {
         float dmg = 100 + 40 * getLevel();
+        if (getTerrainUnderFeet() == 'L') {
+            dmg = dmg * 1.15f;
+        }
+        return Math.round(dmg);
+    }
+
+    public float calculateFlatDmg() {
+        float dmg1 = 200 + 30 * getLevel();
+        if (getTerrainUnderFeet() == 'L') {
+            dmg1 = dmg1 * 1.15f;
+        }
+        float dmg2 = attackSlam();
+        return dmg1 + dmg2;
+    }
+
+    public float attack(Rogue r){
+        float dmg1 = attackExecute(r);
+        dmg1 = Math.round(dmg1 * 1.15f);
+        float dmg2 = attackSlam();
+        dmg2 = Math.round(dmg2 * 0.8f);
+        modifyOvtDmg(r);
+        return dmg1 + dmg2;
+    }
+
+    public float attack(Knight k){
+        float dmg1 = attackExecute(k);
+        dmg1 = Math.round(dmg1);
+        float dmg2 = attackSlam();
+        dmg2 = Math.round(dmg2 * 1.2f);
+        modifyOvtDmg(k);
+        return dmg1 + dmg2;
+    }
+
+    public float attack(Pyromancer p){
+        float dmg1 = attackExecute(p);
+        dmg1 = Math.round(dmg1 * 1.1f);
+        float dmg2 = attackSlam();
+        dmg2 = Math.round(dmg2 * 0.9f);
+        modifyOvtDmg(p);
+        return dmg1 + dmg2;
+    }
+
+    public float attack(Wizard w){
+        float dmg1 = attackExecute(w);
+        dmg1 = Math.round(dmg1 * 0.8f);
+//        System.out.println("Execute: " + dmg1 + getTerrainUnderFeet());
+        float dmg2 = attackSlam();
+        dmg2 = Math.round(dmg2 * 1.05f);
+        modifyOvtDmg(w);
+//        System.out.println("Slam: " + dmg2);
+//        System.out.println("Total: " + (dmg1 + dmg2));
+        return dmg1 + dmg2;
+    }
+
+    private void modifyOvtDmg(Hero h){
         h.setIncap(true);
-        h.setIgnited(false);
-        h.setParalised(false);
-        /// todo overtime dmg
-//        overtimeDMG = 
-//        if (getTerrainType() = Terrain.LAND) {
-//            dmg += dmg * 0.15;
-//        }
-        return dmg;
-    }
-
-    @Override
-    public void attack() {};
-
-    public void attack(Rogue r){
-        if (!r.isDead()) {
-            float dmg = attackExecute(r);
-            r.setHp(r.getHp() - Math.round(dmg + dmg * 0.15));
-            dmg = attackSlam(r);
-            r.setHp(r.getHp() - Math.round(dmg - dmg * 0.2));
-            if (r.getHp() <= 0) {
-                exchangeXP(r);
-            }
-        }
-    }
-
-    public void attack(Knight k){
-        if (!k.isDead()) {
-            float dmg = attackExecute(k);
-            k.setHp(k.getHp() - Math.round(dmg));
-            dmg = attackSlam(k);
-            k.setHp(k.getHp() - Math.round(dmg + dmg * 0.2));
-            if (k.getHp() <= 0) {
-                exchangeXP(k);
-            }
-        }
-    }
-
-    public void attack(Pyromancer p){
-        if (!p.isDead()) {
-            float dmg = attackExecute(p);
-            p.setHp(p.getHp() - Math.round(dmg + dmg * 0.1));
-            dmg = attackSlam(p);
-            p.setHp(p.getHp() - Math.round(dmg - dmg * 0.1));
-            if (p.getHp() <= 0) {
-                exchangeXP(p);
-            }
-        }
-    }
-
-    public void attack(Wizard w){
-        if (!w.isDead()) {
-            float dmg = attackExecute(w);
-            w.setHp(w.getHp() - Math.round(dmg - dmg * 0.2));
-            dmg = attackSlam(w);
-            w.setHp(w.getHp() - Math.round(dmg + dmg * 0.05));
-            if (w.getHp() <= 0) {
-                exchangeXP(w);
-            }
-        }
+        h.setIgnited(false, 0, 0);
+        h.setParalised(false, 0, 0);
     }
 }
 

@@ -1,97 +1,95 @@
-package com.heroes;
-
-import com.map.Terrain;
+package heroes;
 
 public class Wizard extends Hero {
-    public Wizard() {
+
+    public Wizard(int x, int y) {
+        super(x, y);
         setHp(400);
+        setBaseHP(400);
         setMultiplier(30);
     }
 
+    @Override
+    public String getName() {
+        return "W";
+    }
+
+    public float acceptAttack(Hero h) {
+        return h.attack(this);
+    }
+    
     public float attackDrain() {
         return 0.2f + 0.05f * getLevel();
     }
 
-    // todo TODO-IT
     public float attackDeflect(Hero h) {
-        float dmg = 100 + 40 * getLevel();
-        /// todo overtime dmg
-//        overtimeDMG = 
-//        if (getTerrainType() = Terrain.DESERT) {
-//            dmg += dmg * 0.1;
-//        }
-        return dmg;
+        double percent = 0.35 + 0.02 * getLevel();
+        if (percent > 0.7) {
+            percent = 0.7;
+        }
+        System.out.println(getDmgInflicted());
+        float dmgFin = (float) (getDmgInflicted() * percent);
+        if (getTerrainUnderFeet() == 'D') {
+            dmgFin = dmgFin * 1.1f;
+        }
+        return dmgFin;
+//        return Math.round(dmgFin);
+    }
+    
+    public float attack(Rogue r){
+        double percent = attackDrain();
+        percent = 0.8 * percent;
+//        System.out.println("Drain min: " + Math.min(0.3 * r.getBaseHP(), r.getHp()) + " " +r.getBaseHP() + " " + r.getHp());
+        float dmg1 = (float) (percent * Math.min(0.3 * r.getBaseHP(), r.getHp()));
+        if (getTerrainUnderFeet() == 'D') {
+            dmg1 = dmg1 * 1.1f;
+        }
+        dmg1 = Math.round(dmg1);
+//        System.out.println("Drain: " + Math.round(dmg1));
+        float dmg2 = attackDeflect(r);
+        dmg2 = Math.round(dmg2 * 1.2f);
+//        System.out.println("Deflect " + Math.round(dmg2));
+//        System.out.println("Total dmg " + (dmg1 + dmg2));
+        return dmg1 + dmg2;
     }
 
-    @Override
-    public void attack() {};
-
-    public void attack(Rogue r){
-        if (!r.isDead()) {
-            float percent = attackDrain();
-            percent -= 0.2 * percent;
-            float dmg = (float) (percent * Math.min(0.3 * r.getBaseHP(), r.getHp()));
-            dmg = attackDeflect(r);
-            /// todo adauga terrain modifier
-//            if (getTerrainType() = Terrain.DESERT) {
-//                dmg += dmg * 0.1;
-//            }
-            r.setHp(r.getHp() - Math.round(dmg));
-            if (r.getHp() <= 0) {
-                exchangeXP(r);
-            }
+    public float attack(Knight k){
+        float percent = attackDrain();
+        percent = 1.2f * percent;
+        float dmg1 = percent * Math.min(0.3f * k.getBaseHP(), k.getHp());
+        if (getTerrainUnderFeet() == 'D') {
+            dmg1 = dmg1 * 1.1f;
         }
+        dmg1 = Math.round(dmg1);
+//        System.out.println("Drain: " + dmg1);
+        float dmg2 = attackDeflect(k);
+        dmg2 = Math.round(dmg2 * 1.4f);
+//        System.out.println("Deflect " + Math.round(dmg2));
+//        System.out.println("Total dmg " + (dmg1 + dmg2));
+        return dmg1 + dmg2;
     }
 
-    public void attack(Knight k){
-        if (!k.isDead()) {
-            float percent = attackDrain();
-            percent += 0.2 * percent;
-            float dmg = (float) (percent * Math.min(0.3 * k.getBaseHP(), k.getHp()));
-            k.setHp(k.getHp() - Math.round(dmg));
-            /// todo adauga terrain modifier
-//            if (getTerrainType() = Terrain.DESERT) {
-//                dmg += dmg * 0.1;
-//            }
-            dmg = attackDeflect(k);
-            k.setHp(k.getHp() - Math.round(dmg + dmg * 0.2));
-            if (k.getHp() <= 0) {
-                exchangeXP(k);
-            }
+    public float attack(Pyromancer p){
+        float percent = attackDrain();
+        percent = 0.9f * percent;
+        float dmg1 = (float) (percent * Math.min(0.3 * p.getBaseHP(), p.getHp()));
+        if (getTerrainUnderFeet() == 'D') {
+            dmg1 = dmg1 * 1.1f;
         }
+        dmg1 = Math.round(dmg1);
+        float dmg2 = attackDeflect(p);
+        dmg2 = Math.round(dmg2 * 1.3f);
+        return dmg1 + dmg2;
     }
 
-    public void attack(Pyromancer p){
-        if (!p.isDead()) {
-            float percent = attackDrain();
-            percent -= 0.1 * percent;
-            float dmg = (float) (percent * Math.min(0.3 * p.getBaseHP(), p.getHp()));
-            p.setHp(p.getHp() - Math.round(dmg));
-            /// todo adauga terrain modifier
-//            if (getTerrainType() = Terrain.DESERT) {
-//                dmg += dmg * 0.1;
-//            }
-            dmg = attackDeflect(p);
-            p.setHp(p.getHp() - Math.round(dmg - dmg * 0.1));
-            if (p.getHp() <= 0) {
-                exchangeXP(p);
-            }
+    public float attack(Wizard w){
+        float percent = attackDrain();
+        percent = 1.05f * percent;
+//        System.out.println(w.getBaseHP() + " " + percent * (0.3 * w.getBaseHP()) + " " + w.getHp());
+        float dmg = (float) (percent * Math.min(0.3 * w.getBaseHP(), w.getHp()));
+        if (getTerrainUnderFeet() == 'D') {
+            dmg = dmg * 1.1f;
         }
-    }
-
-    public void attack(Wizard w){
-        if (!w.isDead()) {
-            float percent = attackDrain();
-            percent += 0.05 * percent;
-            float dmg = (float) (percent * Math.min(0.3 * w.getBaseHP(), w.getHp()));
-            w.setHp(w.getHp() - Math.round(dmg));
-            /// todo adauga terrain modifier
-//            if (getTerrainType() = Terrain.DESERT) {
-//                dmg += dmg * 0.1;
-//            }
-            if (w.getHp() <= 0) {
-                exchangeXP(w);
-            }
-        }
+        return Math.round(dmg);
     }
 }

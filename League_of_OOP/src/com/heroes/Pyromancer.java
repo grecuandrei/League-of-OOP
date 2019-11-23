@@ -1,79 +1,92 @@
-package com.heroes;
-
-import com.map.Terrain;
+package heroes;
 
 public class Pyromancer extends Hero {
     private float overtimeDMG;
-    public Pyromancer() {
+
+    public Pyromancer(int x, int y) {
+        super(x, y);
         setHp(500);
+        setBaseHP(500);
         setMultiplier(50);
     }
 
-    public float attackFireblast() {
-        float dmg = 350 + 50 * getLevel();
-//        if (getTerrainType() = Terrain.VOLCANIC) {
-//            dmg += dmg * 0.25;
-//        }
-        return dmg;
-    }
-    
-    public float attackIgnite(Hero h) {
-        float dmg = 150 + 20 * getLevel();
-        h.setIgnited(true);
-        h.setIncap(false);
-        h.setParalised(false);
-        /// todo evoretime dmg
-//        overtimeDMG = 
-//        if (getTerrainType() = Terrain.VOLCANIC) {
-//            dmg += dmg * 0.25;
-//        }
-        return dmg;
-    }
-
     @Override
-    public void attack() {};
+    public String getName() {
+        return "P";
+    }
+
+    public float acceptAttack(Hero h) {
+        return h.attack(this);
+    }
     
-    public void attack(Rogue r){
-        float dmg = attackFireblast();
-        r.setHp(r.getHp() - Math.round(dmg - dmg * 0.2));
-        dmg = attackIgnite(r);
-        r.setIgnited(true);
-        r.setHp(r.getHp() - Math.round(dmg - dmg * 0.2));
-        if (r.getHp() <= 0) {
-            exchangeXP(r);
+    private float attackFireblast() {
+        float dmg = 350 + 50 * getLevel();
+        if (getTerrainUnderFeet() == 'V') {
+            dmg = dmg * 1.25f;
         }
+        return Math.round(dmg);
+    }
+    
+    private float attackIgnite() {
+        float dmg = 150 + 20 * getLevel();
+        if (getTerrainUnderFeet() == 'V') {
+            dmg = dmg * 1.25f;
+        }
+        return Math.round(dmg);
     }
 
-    public void attack(Knight k){
-        float dmg = attackFireblast();
-        k.setHp(k.getHp() - Math.round(dmg + dmg * 0.2));
-        dmg = attackIgnite(k);
-        k.setIgnited(true);
-        k.setHp(k.getHp() - Math.round(dmg + dmg * 0.2));
-        if (k.getHp() <= 0) {
-            exchangeXP(k);
-        }
+    public float calculateFlatDmg() {
+        float dmg1 = attackFireblast();
+        float dmg2 = attackIgnite();
+        return dmg1 + dmg2;
+    }
+    
+    public float attack(Rogue r){
+        float dmg1 = attackFireblast();
+        dmg1 = Math.round(dmg1 * 0.8f);
+        float dmg2 = attackIgnite();
+        dmg2 = Math.round(dmg2 * 0.8f);
+        modifyOvtDmg(r, 0.8f);
+        return dmg1 + dmg2;
     }
 
-    public void attack(Pyromancer p){
-        float dmg = attackFireblast();
-        p.setHp(p.getHp() - Math.round(dmg - dmg * 0.1));
-        p.setIgnited(true);
-        dmg = attackIgnite(p);
-        p.setHp(p.getHp() - Math.round(dmg - dmg * 0.1));
-        if (p.getHp() <= 0) {
-            exchangeXP(p);
-        }
+    public float attack(Knight k){
+        float dmg1 = attackFireblast();
+        dmg1 = Math.round(dmg1 * 1.2f);
+        float dmg2 = attackIgnite();
+        dmg2 = Math.round(dmg2 * 1.2f);
+        modifyOvtDmg(k, 1.2f);
+        return dmg1 + dmg2;
     }
 
-    public void attack(Wizard w){
-        float dmg = attackFireblast();
-        w.setHp(w.getHp() - Math.round(dmg + dmg * 0.05));
-        dmg = attackIgnite(w);
-        w.setIgnited(true);
-        w.setHp(w.getHp() - Math.round(dmg + dmg * 0.05));
-        if (w.getHp() <= 0) {
-            exchangeXP(w);
+    public float attack(Pyromancer p){
+        float dmg1 = attackFireblast();
+        dmg1 = Math.round(dmg1 * 0.9f);
+        float dmg2 = attackIgnite();
+        dmg2 = Math.round(dmg2 * 0.9f);
+        modifyOvtDmg(p, 0.9f);
+        return dmg1 + dmg2;
+    }
+
+    public float attack(Wizard w){
+        float dmg1 = attackFireblast();
+        dmg1 = Math.round(dmg1 * 1.05f);
+        float dmg2 = attackIgnite();
+        dmg2 = Math.round(dmg2 * 1.05f);
+        modifyOvtDmg(w, 1.05f);
+        return dmg1 + dmg2;
+    }
+
+    private void modifyOvtDmg(Hero h, float percent){
+        float igniteDmg = 50 + 30 * getLevel();
+        igniteDmg = igniteDmg * percent;
+        if (getTerrainUnderFeet() == 'V') {
+            igniteDmg = igniteDmg * 1.25f;
         }
+//        System.out.println(igniteDmg + h.getName());
+        h.setIncap(false);
+        h.setParalised(false, 0, 0);
+        h.setIgnited(true, igniteDmg, 2);
+//        System.out.println(h.getDmgOvertime());
     }
 }
