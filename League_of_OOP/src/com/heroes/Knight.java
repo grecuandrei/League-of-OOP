@@ -1,12 +1,10 @@
 package heroes;
 
 public class Knight extends Hero {
-
-    public Knight(int x, int y) {
-        super(x, y);
+    Knight() {
         setHp(900);
         setBaseHP(900);
-        setMultiplier(30);
+        setMultiplier(80);
     }
 
     @Override
@@ -18,15 +16,13 @@ public class Knight extends Hero {
         return h.attack(this);
     }
     
-    
-    // todo re-check it Execute
     public float attackExecute(Hero h) {
         float dmg = 200 + 30 * getLevel(), hpLimit;
-        if (getTerrainUnderFeet() == 'L') {
+        if (terrainUnderFeet == 'L') {
             dmg = dmg * 1.15f;
         }
-        if (0.2f * h.getBaseHP() + 0.01f *h.getLevel() <= 0.4f) {
-            hpLimit = 0.2f * h.getBaseHP() + 0.01f *h.getLevel();
+        if (0.2f * h.getBaseHP() + 0.01f * h.getLevel() <= 0.4f) {
+            hpLimit = 0.2f * h.getBaseHP() + 0.01f * h.getLevel();
         } else {
             hpLimit = 0.2f * h.getBaseHP() + 0.4f;
         }
@@ -38,7 +34,7 @@ public class Knight extends Hero {
 
     public float attackSlam() {
         float dmg = 100 + 40 * getLevel();
-        if (getTerrainUnderFeet() == 'L') {
+        if (terrainUnderFeet == 'L') {
             dmg = dmg * 1.15f;
         }
         return Math.round(dmg);
@@ -46,7 +42,7 @@ public class Knight extends Hero {
 
     public float calculateFlatDmg() {
         float dmg1 = 200 + 30 * getLevel();
-        if (getTerrainUnderFeet() == 'L') {
+        if (terrainUnderFeet == 'L') {
             dmg1 = dmg1 * 1.15f;
         }
         float dmg2 = attackSlam();
@@ -83,19 +79,16 @@ public class Knight extends Hero {
     public float attack(Wizard w){
         float dmg1 = attackExecute(w);
         dmg1 = Math.round(dmg1 * 0.8f);
-//        System.out.println("Execute: " + dmg1 + getTerrainUnderFeet());
         float dmg2 = attackSlam();
         dmg2 = Math.round(dmg2 * 1.05f);
         modifyOvtDmg(w);
-//        System.out.println("Slam: " + dmg2);
-//        System.out.println("Total: " + (dmg1 + dmg2));
         return dmg1 + dmg2;
     }
 
     private void modifyOvtDmg(Hero h){
-        h.setIncap(true);
-        h.setIgnited(false, 0, 0);
+        h.setIgnited(0, 0);
         h.setParalised(false, 0, 0);
+        h.setIncap(true);
     }
 }
 

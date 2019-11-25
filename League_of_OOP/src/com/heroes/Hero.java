@@ -1,174 +1,165 @@
 package heroes;
 
+import constants.Constants;
+
 import static java.lang.Integer.max;
 
-public abstract class Hero{
-    private int xp = 0, level = 0, multiplier = 0, X, Y, roundsApply;
+public abstract class Hero {
+    private int xp = 0, level = 0, multiplier = 0, x, y, roundsApply;
     private float hp, baseHP, dmgInflicted, dmgOvertime;
-    private boolean dead = false, incap = false, ignited = false, paralyzed = false, attacked = false;
-    private char terrainUnderFeet;
+    private boolean dead = false;
+    private boolean incap = false;
+    private boolean paralyzed = false;
+    private boolean attacked = false;
+    protected char terrainUnderFeet;
     private String name;
-
-    public Hero(int x, int y) {
-        X = x;
-        Y = y;
-    }
+    public Hero() { }
 
     public String getName() {
         return name;
     }
 
-    public int getXp() {
+    public final int getXp() {
         return xp;
     }
 
-    public void setXp(int xp) {
-        this.xp = xp;
-    }
-
-    public int getLevel() {
+    public final int getLevel() {
         return level;
     }
 
-    public void setLevel(int level) {
+    public final void setLevel(final int level) {
         this.level = level;
     }
 
-    public float getHp() {
+    public final float getHp() {
         return hp;
     }
 
-    public void setHp(float hp) {
+    public final void setHp(final float hp) {
         this.hp = hp;
     }
 
-    public float getBaseHP() {
+    public final float getBaseHP() {
         return baseHP;
     }
 
-    public void setBaseHP(float baseHP) {
+    public final void setBaseHP(final float baseHP) {
         this.baseHP = baseHP;
     }
 
-    public void setMultiplier(int multiplier) {
+    public final void setMultiplier(final int multiplier) {
         this.multiplier = multiplier;
     }
 
-    public void resetHp() {
-//        System.out.println(hp + " " + baseHP + " " + multiplier + " " + level);
+    public final void resetHp() {
+        System.out.println(hp + " " + baseHP + " " + multiplier + " " + level);
         hp = baseHP + multiplier * level;
-//        System.out.println(hp + " " + baseHP + " " + multiplier + " " + level);
+        System.out.println(hp + " " + baseHP + " " + multiplier + " " + level);
     }
 
-    public boolean isDead() {
+    public final boolean isDead() {
         return dead;
     }
 
-    public void setDead(boolean dead) {
+    public final void setDead(final boolean dead) {
         this.dead = dead;
     }
 
-    public boolean isIncap() {
+    public final boolean isIncap() {
         return incap;
     }
 
-    public void setIncap(boolean incap) {
+    public final void setIncap(final boolean incap) {
         this.incap = incap;
         this.dmgOvertime = 0;
         this.roundsApply = 0;
     }
 
-    public void setIgnited(boolean ignited, float dmgOvertime, int roundsApply) {
-//        System.out.println(dmgOvertime + this.getName());
-        this.ignited = ignited;
-        this.dmgOvertime = dmgOvertime;
-        this.roundsApply = roundsApply;
-//        System.out.println(dmgOvertime + this.dmgOvertime);
+    public final void setIgnited(final float dmg_overtime, final int rounds_apply) {
+        this.dmgOvertime = dmg_overtime;
+        this.roundsApply = rounds_apply;
     }
 
-    public boolean isParalised() {
+    public final boolean isParalised() {
         return paralyzed;
     }
 
-    public void setParalised(boolean paralyzed, float dmgOvertime, int roundsApply) {
-        this.paralyzed = paralyzed;
-        this.dmgOvertime = dmgOvertime;
-        this.roundsApply = roundsApply;
+    public final void setParalised(final boolean paralyze, final float dmg_overtime,
+                             final int rounds_apply) {
+        this.paralyzed = paralyze;
+        this.dmgOvertime = dmg_overtime;
+        this.roundsApply = rounds_apply;
     }
 
-    public int getX() {
-        return X;
+    public final int getX() {
+        return x;
     }
 
-    public void setX(int x) {
-        X = x;
+    public final void setX(final int x) {
+        this.x = x;
     }
 
-    public int getY() {
-        return Y;
+    public final int getY() {
+        return y;
     }
 
-    public void setY(int y) {
-        Y = y;
+    public final void setY(final int y) {
+        this.y = y;
     }
 
-    public boolean isAttacked() {
+    public final boolean isAttacked() {
         return attacked;
     }
 
-    public void setAttacked(boolean attacked) {
+    public final void setAttacked(final boolean attacked) {
         this.attacked = attacked;
     }
 
-    public char getTerrainUnderFeet() {
-        return terrainUnderFeet;
-    }
-
-    public void setTerrainUnderFeet(char terrainUnderFeet) {
+    public final void setTerrainUnderFeet(final char terrainUnderFeet) {
         this.terrainUnderFeet = terrainUnderFeet;
     }
 
-    public float getDmgInflicted() {
+    public final float getDmgInflicted() {
         return dmgInflicted;
     }
 
-    public void setDmgInflicted(float dmgInflicted) {
+    public final void setDmgInflicted(final float dmgInflicted) {
         this.dmgInflicted = dmgInflicted;
     }
 
-    public int getRoundsApply() {
+    public final int getRoundsApply() {
         return roundsApply;
     }
 
-    public void setRoundsApply(int roundsApply) {
+    public final void setRoundsApply(final int roundsApply) {
         this.roundsApply = roundsApply;
     }
 
-    public float getDmgOvertime() {
+    public final float getDmgOvertime() {
         return dmgOvertime;
     }
 
-    public void setDmgOvertime(float dmgOvertime) {
+    public final void setDmgOvertime(final float dmgOvertime) {
         this.dmgOvertime = dmgOvertime;
     }
 
-    public float attack(Pyromancer p){
+    public float attack(final Pyromancer p){
         return 0;
     };
 
-    public float attack(Knight k){
+    public float attack(final Knight k){
         return 0;
     };
     
-    public float attack(Wizard w){
+    public float attack(final Wizard w){
         return 0;
     };
 
-    public float attack(Rogue r){
+    public float attack(final Rogue r){
         return 0;
     };
     
-    public float acceptAttack(Hero h) {
+    public float acceptAttack(final Hero h) {
         return 0;
     }
 
@@ -176,7 +167,7 @@ public abstract class Hero{
         return 0;
     }
     
-    public void dealDMG(Hero h, float dmg) {
+    public void dealDMG(final Hero h, final float dmg) {
         h.setHp(h.getHp() - Math.round(dmg));
         if (h.getHp() <= 0) {
             h.setDead(true);
@@ -184,15 +175,12 @@ public abstract class Hero{
         }
     }
 
-    public void xpWinner(int loserLvl) {
-//        System.out.println("Levele " + getLevel() + " " + loserLvl + " " + xp);
-        this.setXp(this.getXp() + max(0, 200 - (level - loserLvl) * 40));
-//        System.out.println("Levele " + getLevel() + " " + loserLvl + " " + xp);
-//        System.out.println(getHp());
+    public void xpWinner(final int loserLvl) {
+        xp = xp + max(0, Constants.BASE_XP_XP_WINNER - (level - loserLvl) * Constants.MULTIPLIER_XP_WINNER);
     }
 
     public void levelUP() {
-        while (xp >= 250 + level * 50) {
+        while (xp >= Constants.BASE_XP_LEVEL_UP + level * Constants.MULTIPLIER_LEVEL_UP) {
             int levelUp = level;
             levelUp++;
             setLevel(levelUp);

@@ -1,10 +1,7 @@
 package heroes;
 
 public class Pyromancer extends Hero {
-    private float overtimeDMG;
-
-    public Pyromancer(int x, int y) {
-        super(x, y);
+    Pyromancer() {
         setHp(500);
         setBaseHP(500);
         setMultiplier(50);
@@ -21,7 +18,7 @@ public class Pyromancer extends Hero {
     
     private float attackFireblast() {
         float dmg = 350 + 50 * getLevel();
-        if (getTerrainUnderFeet() == 'V') {
+        if (terrainUnderFeet == 'V') {
             dmg = dmg * 1.25f;
         }
         return Math.round(dmg);
@@ -29,7 +26,7 @@ public class Pyromancer extends Hero {
     
     private float attackIgnite() {
         float dmg = 150 + 20 * getLevel();
-        if (getTerrainUnderFeet() == 'V') {
+        if (terrainUnderFeet == 'V') {
             dmg = dmg * 1.25f;
         }
         return Math.round(dmg);
@@ -80,13 +77,11 @@ public class Pyromancer extends Hero {
     private void modifyOvtDmg(Hero h, float percent){
         float igniteDmg = 50 + 30 * getLevel();
         igniteDmg = igniteDmg * percent;
-        if (getTerrainUnderFeet() == 'V') {
+        if (terrainUnderFeet == 'V') {
             igniteDmg = igniteDmg * 1.25f;
         }
-//        System.out.println(igniteDmg + h.getName());
         h.setIncap(false);
         h.setParalised(false, 0, 0);
-        h.setIgnited(true, igniteDmg, 2);
-//        System.out.println(h.getDmgOvertime());
+        h.setIgnited(Math.round(igniteDmg), 2);
     }
 }
