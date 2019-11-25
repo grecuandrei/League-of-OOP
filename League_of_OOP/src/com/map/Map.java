@@ -1,48 +1,33 @@
 package map;
 
-
-public class Map {
-    
+public final class Map {
     private char[][] map;
     private static int i = 0, j = 0, n, m;
-    
     private static Map instance = null;
-    
-    private Map(int n, int m) {
-        Map.n = n;
-        Map.m = m;
-        map = new char[n][m];
+    private Map(final int nn, final int mm) {
+        Map.n = nn;
+        Map.m = mm;
+        map = new char[nn][mm];
     }
 
-    public static Map getInstance(int n, int m){
-        if(instance == null) {
-            instance = new Map(n ,m);
+    public static Map getInstance(final int nn, final int mm) {
+        if (instance == null) {
+            instance = new Map(nn, mm);
         }
         return instance;
     }
-    
-    public void addTerrain(char S) {
+    public void addTerrain(final char s) {
         if (i < n && j < m) {
-            map[i][j] = S;
-            j++;
+            map[i][j] = s;
+            ++j;
         } else if (j == n) {
-            i++;
+            ++i;
             j = 0;
-            map[i][j] = S;
-            j++;
+            map[i][j] = s;
+            ++j;
         }
     }
-    
-    public char getTerrain(int i, int j) {
-        return map[i][j];
-    }
-    
-    public void printMap() {
-        for (int i = 0; i<n;i++){
-            for (int j = 0; j< m;j++) {
-                System.out.print(map[i][j] + " ");
-            }
-            System.out.println();
-        }
+    public char getTerrain(final int ii, final int jj) {
+        return map[ii][jj];
     }
 }
