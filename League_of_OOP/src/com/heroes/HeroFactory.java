@@ -1,8 +1,8 @@
 package heroes;
-
+// Implementation of the factory to create the heroes
 public class HeroFactory {
-    public Hero getHero(final char heroType){
-        switch(heroType) {
+    public final Hero getHero(final char heroType) {
+        switch (heroType) {
             case 'P':
                 return new Pyromancer();
             case 'K':

@@ -1,93 +1,108 @@
 package heroes;
 
+import constants.Constants;
+
 public class Knight extends Hero {
+    // initialization of a Knight
     Knight() {
-        setHp(900);
-        setBaseHP(900);
-        setMultiplier(80);
+        setHp(Constants.INITIAL_HP_KNIGHT);
+        setBaseHP(Constants.INITIAL_HP_KNIGHT);
+        setMultiplier(Constants.LEVEL_HP_MULTIPLIER_KNIGHT);
+        setName("K");
     }
 
-    @Override
-    public String getName() {
-        return "K";
-    }
-
-    public float acceptAttack(Hero h) {
+    // accept visitor from the Double-Dispatch pattern
+    public final float acceptAttack(final Hero h) {
         return h.attack(this);
     }
-    
-    public float attackExecute(Hero h) {
-        float dmg = 200 + 30 * getLevel(), hpLimit;
+    // implementation of first attack
+    private float attackExecute(final Hero h) {
+        float dmg = Constants.BASE_DMG_EXECUTE_KNIGHT
+                + Constants.BASE_MULTIPLIER_EXECUTE * getLevel(), hpLimit;
         if (terrainUnderFeet == 'L') {
-            dmg = dmg * 1.15f;
+            dmg = dmg * Constants.LAND_MODIFIER_KNIGHT;
         }
-        if (0.2f * h.getBaseHP() + 0.01f * h.getLevel() <= 0.4f) {
-            hpLimit = 0.2f * h.getBaseHP() + 0.01f * h.getLevel();
+        // check if the hp is under a certain limit
+        if (Constants.HP_PERCENT * h.getBaseHP()
+                + Constants.LEVEL_PERCENT * h.getLevel() <= Constants.HP_LIMIT) {
+            hpLimit = Constants.HP_PERCENT * h.getBaseHP()
+                    + Constants.LEVEL_PERCENT * h.getLevel();
         } else {
-            hpLimit = 0.2f * h.getBaseHP() + 0.4f;
+            hpLimit = Constants.HP_PERCENT * h.getBaseHP() + Constants.HP_LIMIT;
         }
-        if (hpLimit - h.getHp() >= 0) {
+        // and see if it kills him
+        if (h.getHp() - hpLimit <= 0) {
             h.setDead(true);
+            dmg = h.getHp();
         }
         return Math.round(dmg);
     }
-
-    public float attackSlam() {
-        float dmg = 100 + 40 * getLevel();
+    // implementation of the second attack
+    private float attackSlam() {
+        float dmg = Constants.BASE_DMG_SLAM + Constants.BASE_MULTIPLIER_SLAM * getLevel();
         if (terrainUnderFeet == 'L') {
-            dmg = dmg * 1.15f;
+            dmg = dmg * Constants.LAND_MODIFIER_KNIGHT;
         }
         return Math.round(dmg);
     }
-
-    public float calculateFlatDmg() {
-        float dmg1 = 200 + 30 * getLevel();
+    // method that returns the base damage dealt for wizard
+    public final float calculateFlatDmg() {
+        float dmg1 = Constants.BASE_DMG_EXECUTE_KNIGHT
+                + Constants.BASE_MULTIPLIER_EXECUTE * getLevel();
         if (terrainUnderFeet == 'L') {
-            dmg1 = dmg1 * 1.15f;
+            dmg1 = dmg1 * Constants.LAND_MODIFIER_KNIGHT;
         }
         float dmg2 = attackSlam();
         return dmg1 + dmg2;
     }
-
-    public float attack(Rogue r){
+    // calculate dmg for Rogue
+    public final float attack(final Rogue r) {
         float dmg1 = attackExecute(r);
-        dmg1 = Math.round(dmg1 * 1.15f);
+        if (!r.isDead()) {
+            dmg1 = Math.round(dmg1 * Constants.EXECUTE_MULTIPLIER_ROGUE);
+        }
         float dmg2 = attackSlam();
-        dmg2 = Math.round(dmg2 * 0.8f);
+        dmg2 = Math.round(dmg2 * Constants.SLAM_MULTIPLIER_ROGUE);
         modifyOvtDmg(r);
         return dmg1 + dmg2;
     }
-
-    public float attack(Knight k){
+    // calculate dmg for Knight
+    public final float attack(final Knight k) {
         float dmg1 = attackExecute(k);
-        dmg1 = Math.round(dmg1);
+        if (!k.isDead()) {
+            dmg1 = Math.round(dmg1);
+        }
         float dmg2 = attackSlam();
-        dmg2 = Math.round(dmg2 * 1.2f);
+        dmg2 = Math.round(dmg2 * Constants.SLAM_MULTIPLIER_KNIGHT);
         modifyOvtDmg(k);
         return dmg1 + dmg2;
     }
-
-    public float attack(Pyromancer p){
+    // calculate dmg for Pyromancer
+    public final float attack(final Pyromancer p) {
         float dmg1 = attackExecute(p);
-        dmg1 = Math.round(dmg1 * 1.1f);
+        if (!p.isDead()) {
+            dmg1 = Math.round(dmg1 * Constants.EXECUTE_MULTIPLIER_PYRO);
+        }
         float dmg2 = attackSlam();
-        dmg2 = Math.round(dmg2 * 0.9f);
+        dmg2 = Math.round(dmg2 * Constants.SLAM_MULTIPLIER_PYRO);
         modifyOvtDmg(p);
         return dmg1 + dmg2;
     }
-
-    public float attack(Wizard w){
+    // calculate dmg for Wizard
+    public final float attack(final Wizard w) {
         float dmg1 = attackExecute(w);
-        dmg1 = Math.round(dmg1 * 0.8f);
+        if (!w.isDead()) {
+            dmg1 = Math.round(dmg1 * Constants.EXECUTE_MULTIPLIER_WIZARD);
+        }
         float dmg2 = attackSlam();
-        dmg2 = Math.round(dmg2 * 1.05f);
+        dmg2 = Math.round(dmg2 * Constants.SLAM_MULTIPLIER_WIZARD);
         modifyOvtDmg(w);
         return dmg1 + dmg2;
     }
-
-    private void modifyOvtDmg(Hero h){
-        h.setIgnited(0, 0);
-        h.setParalised(false, 0, 0);
+    // method that modifies the overtime parameters
+    private void modifyOvtDmg(final Hero h) {
+        h.setIgnited(false, 0, 0);
+        h.setParalyzed(false, 0, 0);
         h.setIncap(true);
     }
 }

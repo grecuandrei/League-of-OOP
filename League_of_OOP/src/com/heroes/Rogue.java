@@ -3,94 +3,93 @@ package heroes;
 import constants.Constants;
 
 public class Rogue extends Hero {
-    private int backstabNr;
-    
+    private int backstabNr; // number of the basckstabs given
+    // initialization of a Rogue
     Rogue() {
         setHp(Constants.INITIAL_HP_ROGUE);
         setBaseHP(Constants.INITIAL_HP_ROGUE);
-        setMultiplier(Constants.LEVEL_HP_MULTIPLIER);
+        setMultiplier(Constants.LEVEL_HP_MULTIPLIER_ROGUE);
         backstabNr = -1;
+        setName("R");
     }
-
-    @Override
-    public String getName() {
-        return "R";
-    }
-
-    public float acceptAttack(Hero h) {
+    // accept visitor from the Double-Dispatch pattern
+    public final float acceptAttack(final Hero h) {
         return h.attack(this);
     }
-    
-    public float attackBackstab() {
-        float dmg = Constants.BASE_DMG_BACKSTAB_ROGUE + Constants.BASE_MULTIPLIER_BACKSTAB * getLevel();
-        backstabNr++;
+    // implementation of first attack
+    private float attackBackstab() {
+        float dmg = Constants.BASE_DMG_BACKSTAB_ROGUE
+                + Constants.BASE_MULTIPLIER_BACKSTAB * getLevel();
+        backstabNr++; // number of backstabs increases each time is applied
+        // and if it is a multiplier of 3, it will deal increased damage
         if (backstabNr % Constants.HITS_BACKSTAB == 0 && terrainUnderFeet == 'W') {
             dmg = dmg * Constants.CRIT_DMG * Constants.LAND_MODIFIER_ROGUE;
-        } else if (terrainUnderFeet == 'W' && backstabNr % Constants.HITS_BACKSTAB != 0){
+        } else if (terrainUnderFeet == 'W' && backstabNr % Constants.HITS_BACKSTAB != 0) {
             dmg = dmg * Constants.LAND_MODIFIER_ROGUE;
         }
-        return Math.round(dmg);
+        return dmg;
     }
-
-    public float attackParalysis() {
-        float dmg = Constants.BASE_DMG_PARALYSIS_ROGUE + Constants.BASE_MULTIPLIER_PARALYSIS * getLevel();
+    // implementation of the second attack
+    private float attackParalysis() {
+        float dmg = Constants.BASE_DMG_PARALYSIS_ROGUE
+                + Constants.BASE_MULTIPLIER_PARALYSIS * getLevel();
         if (terrainUnderFeet == 'W') {
             dmg = dmg * Constants.LAND_MODIFIER_ROGUE;
         }
-        return Math.round(dmg);
+        return dmg;
     }
-
-    public float calculateFlatDmg() {
+    // method that returns the base damage dealt for wizard
+    public final float calculateFlatDmg() {
         float dmg1 = attackBackstab();
         backstabNr--;
         float dmg2 = attackParalysis();
         return Math.round(dmg1 + dmg2);
     }
-    
-    public float attack(Rogue r){
+    // calculate dmg for Rogue
+    public final float attack(final Rogue r) {
         float dmg1 = attackBackstab();
         dmg1 = Math.round(dmg1 * Constants.BACKSTAB_MULTIPLIER_ROGUE);
         float dmg2 = attackParalysis();
-        modifyOvtDmg(r);
         dmg2 = Math.round(dmg2 * Constants.PARALYSIS_MULTIPLIER_ROGUE);
-        r.setDmgOvertime(dmg2);
+        modifyOvtDmg(r, dmg2);
         return dmg1 + dmg2;
     }
-
-    public float attack(Knight k){
+    // calculate dmg for Knight
+    public final float attack(final Knight k) {
         float dmg1 = attackBackstab();
         dmg1 = Math.round(dmg1 * Constants.BACKSTAB_MULTIPLIER_KNIGHT);
         float dmg2 = attackParalysis();
         dmg2 = Math.round(dmg2 * Constants.PARALYSIS_MULTIPLIER_KNIGHT);
-        modifyOvtDmg(k);
-        k.setDmgOvertime(dmg2);
+        modifyOvtDmg(k, dmg2);
         return dmg1 + dmg2;
     }
-
-    public float attack(Pyromancer p){
+    // calculate dmg for Pyromancer
+    public final float attack(final Pyromancer p) {
         float dmg1 = attackBackstab();
         dmg1 = Math.round(dmg1 * Constants.BACKSTAB_MULTIPLIER_PYRO);
         float dmg2 = attackParalysis();
         dmg2 = Math.round(dmg2 * Constants.PARALYSIS_MULTIPLIER_PYRO);
-        modifyOvtDmg(p);
-        p.setDmgOvertime(dmg2);
+        modifyOvtDmg(p, dmg2);
         return dmg1 + dmg2;
     }
-
-    public float attack(Wizard w){
+    // calculate dmg for Wizard
+    public final float attack(final Wizard w) {
         float dmg1 = attackBackstab();
         dmg1 = Math.round(dmg1 * Constants.BACKSTAB_MULTIPLIER_WIZARD);
         float dmg2 = attackParalysis();
         dmg2 = Math.round(dmg2 * Constants.PARALYSIS_MULTIPLIER_WIZARD);
-        modifyOvtDmg(w);
-        w.setDmgOvertime(dmg2);
+        modifyOvtDmg(w, dmg2);
         return dmg1 + dmg2;
     }
-    
-    private void modifyOvtDmg(Hero h){
-        float dmg = Constants.PARALISED_BASE_DMG + Constants.PARALISED_MULTIPLIER * getLevel();
+    // method that modifies the overtime parameters
+    private void modifyOvtDmg(final Hero h, final float dmg) {
+//        float dmg = Constants.PARALISED_BASE_DMG +
+//                Constants.PARALISED_MULTIPLIER * getLevel();
+//        System.out.println("-------------------------------Rogue damage: " + dmg);
         h.setIncap(false);
-        h.setIgnited(0, 0);
-        h.setParalised(true, dmg, terrainUnderFeet == 'W' ? 6 : 3);
+        h.setIgnited(false, 0, 0);
+        // if it's on a terrain favorable for Rogue, the paralize will take 6 rounds, instead of 3
+        h.setParalyzed(true, dmg, terrainUnderFeet == 'W'
+                ? Constants.MAX_ROUNDS : Constants.MIN_ROUNDS);
     }
 }
