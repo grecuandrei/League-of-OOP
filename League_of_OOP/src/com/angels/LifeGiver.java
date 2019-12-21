@@ -6,6 +6,10 @@ import heroes.Rogue;
 import heroes.Wizard;
 
 public class LifeGiver extends Angel {
+    public LifeGiver() {
+        isGood = true;
+    }
+
     public void apply(Knight k) {
         k.setHp(k.getHp() + 100);
     }

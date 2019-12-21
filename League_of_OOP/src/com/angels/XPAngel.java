@@ -5,24 +5,30 @@ import heroes.Pyromancer;
 import heroes.Rogue;
 import heroes.Wizard;
 
+import java.io.IOException;
+
 public class XPAngel extends Angel {
-    public void apply(Knight k) {
+    public XPAngel() {
+        isGood = true;
+    }
+
+    public void apply(Knight k) throws IOException {
         k.setXp(k.getXp() + 45);
-        k.levelUP();
+//        k.levelUP();
     }
 
-    public void apply(Pyromancer p) {
+    public void apply(Pyromancer p) throws IOException {
         p.setXp(p.getXp() + 50);
-        p.levelUP();
+//        p.levelUP();
     }
 
-    public void apply(Rogue r) {
+    public void apply(Rogue r) throws IOException {
         r.setXp(r.getXp() + 40);
-        r.levelUP();
+//        r.levelUP();
     }
 
-    public void apply(Wizard w) {
+    public void apply(Wizard w) throws IOException {
         w.setXp(w.getXp() + 60);
-        w.levelUP();
+//        w.levelUP();
     }
 }

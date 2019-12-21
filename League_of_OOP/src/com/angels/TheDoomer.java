@@ -6,6 +6,10 @@ import heroes.Rogue;
 import heroes.Wizard;
 
 public class TheDoomer extends Angel {
+    public TheDoomer() {
+        isGood = false;
+    }
+
     public void apply(Knight k) {
         k.setDead(true);
     }

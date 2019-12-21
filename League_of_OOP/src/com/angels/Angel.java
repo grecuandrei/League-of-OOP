@@ -1,10 +1,16 @@
 package angels;
 
 import heroes.*;
+import magician.Observer;
+import magician.SubjectAngel;
 
-public abstract class Angel {
+import java.io.IOException;
+
+public abstract class Angel implements SubjectAngel{
     private String name;
     private int X, Y, round;
+    private Observer magician;
+    protected boolean isGood;
 
     public String getName() {
         return name;
@@ -38,11 +44,23 @@ public abstract class Angel {
         this.round = round;
     }
 
-    public void apply(Knight k) { }
+    public boolean isGood() {
+        return isGood;
+    }
 
-    public void apply(Pyromancer p) { }
+    public void apply(Knight k) throws IOException { }
 
-    public void apply(Rogue r) { }
+    public void apply(Pyromancer p) throws IOException { }
 
-    public void apply(Wizard w) { }
+    public void apply(Rogue r) throws IOException { }
+
+    public void apply(Wizard w) throws IOException { }
+    
+    public void Attach(Observer o) {
+        magician = o;
+    }
+
+    public void Notify() throws IOException {
+        magician.update(this);
+    }
 }

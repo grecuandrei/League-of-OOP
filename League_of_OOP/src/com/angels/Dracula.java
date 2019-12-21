@@ -6,6 +6,10 @@ import heroes.Rogue;
 import heroes.Wizard;
 
 public class Dracula extends Angel {
+    public Dracula() {
+        isGood = false;
+    }
+
     public void apply(Knight k) {
         k.setAngelDmgModifier(k.getAngelDmgModifier() - 0.2f);
         k.setHp(k.getHp() - 60);

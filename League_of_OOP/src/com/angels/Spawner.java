@@ -6,6 +6,10 @@ import heroes.Rogue;
 import heroes.Wizard;
 
 public class Spawner extends Angel {
+    public Spawner() {
+        isGood = true;
+    }
+
     public void apply(Knight k) {
         k.setDead(false);
         k.setHp(200);

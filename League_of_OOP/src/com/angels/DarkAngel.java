@@ -6,6 +6,10 @@ import heroes.Rogue;
 import heroes.Wizard;
 
 public class DarkAngel extends Angel {
+    public DarkAngel() {
+        isGood = false;
+    }
+
     public void apply(Knight k) {
         k.setHp(k.getHp() - 40);
     }

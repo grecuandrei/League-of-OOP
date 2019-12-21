@@ -6,6 +6,10 @@ import heroes.Rogue;
 import heroes.Wizard;
 
 public class DamageAngel extends Angel {
+    public DamageAngel() {
+        isGood = true;
+    }
+
     public void apply(Knight k) {
         k.setAngelDmgModifier(k.getAngelDmgModifier() + 0.15f);
     }

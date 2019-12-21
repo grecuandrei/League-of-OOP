@@ -6,6 +6,10 @@ import heroes.Rogue;
 import heroes.Wizard;
 
 public class GoodBoy extends Angel {
+    public GoodBoy() {
+        isGood = true;
+    }
+
     public void apply(Knight k) {
         k.setAngelDmgModifier(k.getAngelDmgModifier() + 0.4f);
         k.setHp(k.getHp() + 20);
