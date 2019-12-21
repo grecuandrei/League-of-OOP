@@ -1,6 +1,12 @@
 package heroes;
 
+import angels.Angel;
 import constants.Constants;
+import strategy.DefaultStrategy;
+import strategy.Strategy_1;
+import strategy.Strategy_2;
+
+import java.io.IOException;
 
 public class Knight extends Hero {
     // initialization of a Knight
@@ -14,6 +20,12 @@ public class Knight extends Hero {
     // accept visitor from the Double-Dispatch pattern
     public final float acceptAttack(final Hero h) {
         return h.attack(this);
+    }
+    
+    public final void acceptAngel(final Angel a) throws IOException {
+        if (!this.isDead()) {
+            a.apply(this);
+        }
     }
     // implementation of first attack
     private float attackExecute(final Hero h) {
@@ -35,7 +47,8 @@ public class Knight extends Hero {
             h.setDead(true);
             dmg = h.getHp();
         }
-        return Math.round(dmg);
+//        return Math.round(dmg);
+        return dmg;
     }
     // implementation of the second attack
     private float attackSlam() {
@@ -43,7 +56,8 @@ public class Knight extends Hero {
         if (terrainUnderFeet == 'L') {
             dmg = dmg * Constants.LAND_MODIFIER_KNIGHT;
         }
-        return Math.round(dmg);
+//        return Math.round(dmg);
+        return dmg;
     }
     // method that returns the base damage dealt for wizard
     public final float calculateFlatDmg() {
@@ -59,10 +73,10 @@ public class Knight extends Hero {
     public final float attack(final Rogue r) {
         float dmg1 = attackExecute(r);
         if (!r.isDead()) {
-            dmg1 = Math.round(dmg1 * Constants.EXECUTE_MULTIPLIER_ROGUE);
+            dmg1 = Math.round(dmg1 * (Constants.EXECUTE_MULTIPLIER_ROGUE + angelDmgModifier + strategyModifier));
         }
         float dmg2 = attackSlam();
-        dmg2 = Math.round(dmg2 * Constants.SLAM_MULTIPLIER_ROGUE);
+        dmg2 = Math.round(dmg2 * (Constants.SLAM_MULTIPLIER_ROGUE + angelDmgModifier + strategyModifier));
         modifyOvtDmg(r);
         return dmg1 + dmg2;
     }
@@ -73,18 +87,20 @@ public class Knight extends Hero {
             dmg1 = Math.round(dmg1);
         }
         float dmg2 = attackSlam();
-        dmg2 = Math.round(dmg2 * Constants.SLAM_MULTIPLIER_KNIGHT);
+        dmg2 = Math.round(dmg2 * (Constants.SLAM_MULTIPLIER_KNIGHT + angelDmgModifier + strategyModifier));
         modifyOvtDmg(k);
+        System.out.println(Constants.SLAM_MULTIPLIER_KNIGHT + " " + angelDmgModifier + " " + strategyModifier);
+        System.out.println((Constants.SLAM_MULTIPLIER_KNIGHT + angelDmgModifier + strategyModifier));;
         return dmg1 + dmg2;
     }
     // calculate dmg for Pyromancer
     public final float attack(final Pyromancer p) {
         float dmg1 = attackExecute(p);
         if (!p.isDead()) {
-            dmg1 = Math.round(dmg1 * Constants.EXECUTE_MULTIPLIER_PYRO);
+            dmg1 = Math.round(dmg1 * (Constants.EXECUTE_MULTIPLIER_PYRO + angelDmgModifier + strategyModifier));
         }
         float dmg2 = attackSlam();
-        dmg2 = Math.round(dmg2 * Constants.SLAM_MULTIPLIER_PYRO);
+        dmg2 = Math.round(dmg2 * (Constants.SLAM_MULTIPLIER_PYRO + angelDmgModifier + strategyModifier));
         modifyOvtDmg(p);
         return dmg1 + dmg2;
     }
@@ -92,10 +108,10 @@ public class Knight extends Hero {
     public final float attack(final Wizard w) {
         float dmg1 = attackExecute(w);
         if (!w.isDead()) {
-            dmg1 = Math.round(dmg1 * Constants.EXECUTE_MULTIPLIER_WIZARD);
+            dmg1 = Math.round(dmg1 * (Constants.EXECUTE_MULTIPLIER_WIZARD + angelDmgModifier + strategyModifier));
         }
         float dmg2 = attackSlam();
-        dmg2 = Math.round(dmg2 * Constants.SLAM_MULTIPLIER_WIZARD);
+        dmg2 = Math.round(dmg2 * (Constants.SLAM_MULTIPLIER_WIZARD + angelDmgModifier + strategyModifier));
         modifyOvtDmg(w);
         return dmg1 + dmg2;
     }
@@ -104,6 +120,16 @@ public class Knight extends Hero {
         h.setIgnited(false, 0, 0);
         h.setParalyzed(false, 0, 0);
         h.setIncap(true);
+    }
+    
+    public void chooseStrategy() {
+        if (getBaseHP() / 3 < getHp() && getBaseHP() / 2 > getHp()) { // (1/3 * MAX_LEVEL_HP) < CURRENT_HP < (1/2 * MAX_LEVEL_HP)
+            setStrategy(new Strategy_1(0.2f,0.5f));
+        } else if (getHp() < getBaseHP() / 3) { // CURRENT_HP < (1/3 * MAX_LEVEL_HP)
+            setStrategy(new Strategy_2(0.25f,0.2f));
+        } else {
+            setStrategy(new DefaultStrategy(0,0));
+        }
     }
 }
 

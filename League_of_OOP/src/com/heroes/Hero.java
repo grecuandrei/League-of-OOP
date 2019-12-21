@@ -1,16 +1,25 @@
 package heroes;
 
+import angels.Angel;
 import constants.Constants;
+import magician.Observer;
+import magician.SubjectHero;
+import strategy.HeroStrategy;
+
+import java.io.IOException;
 
 import static java.lang.Integer.max;
 
-public abstract class Hero {
-    private int xp = 0, level = 0, multiplier = 0, x, y, roundsApply = 0, hp, baseHP;
+public abstract class Hero implements SubjectHero {
+    private int xp = 0, level = 0, multiplier = 0, x, y, roundsApply = 0, hp, baseHP, ordLine;
     private float dmgInflicted, dmgOvertime;
+    protected float angelDmgModifier = 0.0f, strategyModifier = 0.0f;
     private boolean dead = false, incap = false, ignited = false;
     private boolean paralyzed = false, attacked = false;
     protected char terrainUnderFeet;
     private String name;
+    private HeroStrategy hs;
+    private Observer magician;
     public Hero() { }
 
     public final String getName() {
@@ -23,6 +32,10 @@ public abstract class Hero {
 
     public final int getXp() {
         return xp;
+    }
+
+    public void setXp(int xp) {
+        this.xp = xp;
     }
 
     public final int getLevel() {
@@ -113,6 +126,14 @@ public abstract class Hero {
         this.y = y;
     }
 
+    public int getOrdLine() {
+        return ordLine;
+    }
+
+    public void setOrdLine(int ordLine) {
+        this.ordLine = ordLine;
+    }
+
     public final boolean isAttacked() {
         return attacked;
     }
@@ -133,6 +154,10 @@ public abstract class Hero {
         this.dmgInflicted = dmgInflicted;
     }
 
+    public final float getDmgOvertime() {
+        return dmgOvertime;
+    }
+    
     public final int getRoundsApply() {
         return roundsApply;
     }
@@ -141,8 +166,20 @@ public abstract class Hero {
         this.roundsApply = roundsApply;
     }
 
-    public final float getDmgOvertime() {
-        return dmgOvertime;
+    public void setAngelDmgModifier(float angelDmgModifier) {
+        this.angelDmgModifier = angelDmgModifier;
+    }
+
+    public float getAngelDmgModifier() {
+        return angelDmgModifier;
+    }
+
+    public float getStrategyModifier() {
+        return strategyModifier;
+    }
+
+    public void setStrategyModifier(float strategyModifier) {
+        this.strategyModifier = strategyModifier;
     }
 
     /**
@@ -186,7 +223,9 @@ public abstract class Hero {
     public float acceptAttack(final Hero h) {
         return 0;
     }
-
+    
+    public void acceptAngel(Angel a) throws IOException { }
+    
     /**
      * Method that calculates the base damage to be more intuitive.
      * Easier to parse the damage that will be dealt for the wizard.
@@ -210,14 +249,55 @@ public abstract class Hero {
                 * Constants.MULTIPLIER_XP_WINNER);
     }
     // does the level up and resets hp if needed
-    public final void levelUP() {
+    public final void levelUP() throws IOException {
         while (xp >= Constants.BASE_XP_LEVEL_UP + level * Constants.MULTIPLIER_LEVEL_UP) {
             int levelUp = level;
             levelUp++;
             setLevel(levelUp);
+            NotifyLevelUp();
             if (!isDead()) {
                 resetHp();
             }
         }
+    }
+    
+    public void doStrategy() {
+        hs.modifyHero(this);
+    }
+    
+    public void setStrategy(HeroStrategy hs) {
+        this.hs = hs;
+    }
+    
+    public void chooseStrategy() { }
+
+    @Override
+    public void Attach(Observer o) {
+        magician = o;
+    }
+
+    @Override
+    public void NotifyHero(Angel a) throws IOException {
+        magician.updateHero(this, a);
+    }
+
+    @Override
+    public void NotifyDeadHero() throws IOException {
+        magician.updateDead(this);
+    }
+
+    @Override
+    public void NotifyAliveHero() throws IOException {
+        magician.updateAlive(this);
+    }
+
+    @Override
+    public void NotifyDeadInCombat(Hero h) throws IOException {
+        magician.updateFight(this, h);
+    }
+
+    @Override
+    public void NotifyLevelUp() throws IOException {
+        magician.updateLevelUp(this);
     }
 }
