@@ -4,14 +4,20 @@ import angels.Angel;
 import heroes.Hero;
 import java.io.BufferedWriter;
 import java.io.IOException;
-
-public class GreatMagician implements Observer {
+// Implementation of pattern Singleton for the Magician
+public final class GreatMagician implements Observer {
     private BufferedWriter writer;
+    private static GreatMagician instance = null;
 
-    public final void setWriter(final BufferedWriter writer) {
+    private GreatMagician(final BufferedWriter writer) {
         this.writer = writer;
     }
-
+    public static GreatMagician getInstance(final BufferedWriter writer) {
+        if (instance == null) {
+            instance = new GreatMagician(writer);
+        }
+        return instance;
+    }
     /**
      * This method is called whenever the observed object is changed. An
      * application calls an {@code Observable} object's
@@ -21,14 +27,14 @@ public class GreatMagician implements Observer {
      * @param arg an argument passed to the {@code notifyObservers}
      */
     @Override
-    public final void update(final Object arg) throws IOException {
+    public void update(final Object arg) throws IOException {
         writer.write("Angel " + ((Angel) arg).getName() + " was spawned at "
                 + ((Angel) arg).getX() + " " + ((Angel) arg).getY());
         writer.newLine();
     }
 
     @Override
-    public final void updateHero(final Object o, final Angel a) throws IOException {
+    public void updateHero(final Object o, final Angel a) throws IOException {
         String name;
         switch (((Hero) o).getName()) {
             case "K":
@@ -52,7 +58,7 @@ public class GreatMagician implements Observer {
     }
 
     @Override
-    public final void updateDead(final Object o) throws IOException {
+    public void updateDead(final Object o) throws IOException {
         String name;
         switch (((Hero) o).getName()) {
             case "K":
@@ -73,7 +79,7 @@ public class GreatMagician implements Observer {
     }
 
     @Override
-    public final void updateAlive(final Object o) throws IOException {
+    public void updateAlive(final Object o) throws IOException {
         String name;
         switch (((Hero) o).getName()) {
             case "K":
@@ -94,7 +100,7 @@ public class GreatMagician implements Observer {
     }
 
     @Override
-    public final void updateFight(final Object o, final Hero h) throws IOException {
+    public void updateFight(final Object o, final Hero h) throws IOException {
         String name1, name2;
         switch (((Hero) o).getName()) {
             case "K":
@@ -128,7 +134,7 @@ public class GreatMagician implements Observer {
     }
 
     @Override
-    public final void updateLevelUp(final Object o) throws IOException {
+    public void updateLevelUp(final Object o) throws IOException {
         String name;
         switch (((Hero) o).getName()) {
             case "K":
