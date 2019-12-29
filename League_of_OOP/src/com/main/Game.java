@@ -21,14 +21,15 @@ public class Game {
     private AngelsFactory af = new AngelsFactory();
     private ArrayList<String> movess = new ArrayList<>();
     private ArrayList<Angel> angels = new ArrayList<>();
-    private GreatMagician magician = new GreatMagician();
+    private GreatMagician magician;
     public Game() { }
     public final void playGame(final File inputFile, final File outputFile) {
         try {
             Scanner sr = new Scanner(inputFile);
             // Input
             BufferedWriter writer = new BufferedWriter(new FileWriter(outputFile));
-            magician.setWriter(writer);
+            // build the magician
+            magician = GreatMagician.getInstance(writer);
             // Map instantiation
             int n = sr.nextInt();
             int m = sr.nextInt();
