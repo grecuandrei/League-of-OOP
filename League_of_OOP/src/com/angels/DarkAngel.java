@@ -1,5 +1,6 @@
 package angels;
 
+import constants.Constants;
 import heroes.Knight;
 import heroes.Pyromancer;
 import heroes.Rogue;
@@ -10,19 +11,19 @@ public class DarkAngel extends Angel {
         isGood = false;
     }
 
-    public void apply(Knight k) {
-        k.setHp(k.getHp() - 40);
+    public final void apply(final Knight k) {
+        k.setHp(k.getHp() - Constants.DARKA_KNIGHT);
     }
 
-    public void apply(Pyromancer p) {
-        p.setHp(p.getHp() - 30);
+    public final void apply(final Pyromancer p) {
+        p.setHp(p.getHp() - Constants.DARKA_PYRO);
     }
 
-    public void apply(Rogue r) {
-        r.setHp(r.getHp() - 10);
+    public final void apply(final Rogue r) {
+        r.setHp(r.getHp() - Constants.DARKA_ROGUE);
     }
 
-    public void apply(Wizard w) {
-        w.setHp(w.getHp() - 20);
+    public final void apply(final Wizard w) {
+        w.setHp(w.getHp() - Constants.DARKA_WIZARD);
     }
 }

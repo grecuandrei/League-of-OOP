@@ -3,8 +3,8 @@ package heroes;
 import angels.Angel;
 import constants.Constants;
 import strategy.DefaultStrategy;
-import strategy.Strategy_1;
-import strategy.Strategy_2;
+import strategy.Strategy1;
+import strategy.Strategy2;
 
 import java.io.IOException;
 
@@ -16,16 +16,13 @@ public class Wizard extends Hero {
         setMultiplier(Constants.LEVEL_HP_MULTIPLIER_WIZARD);
         setName("W");
     }
-
     // accept visitor from the Double-Dispatch pattern
     public final float acceptAttack(final Hero h) {
         return h.attack(this);
     }
-
+    // accept angel
     public final void acceptAngel(final Angel a) throws IOException {
-        if (!this.isDead()) {
-            a.apply(this);
-        }
+        a.apply(this);
     }
     // implementation of first attack
     private float attackDrain() {
@@ -49,61 +46,70 @@ public class Wizard extends Hero {
     // calculate dmg for Rogue
     public final float attack(final Rogue r) {
         float percent = attackDrain();
-        percent = (Constants.DRAIN_MULTIPLIER_ROGUE + angelDmgModifier + strategyModifier) * percent;
+        percent = percent
+                * (Constants.DRAIN_MULTIPLIER_ROGUE + angelDmgModifier + strategyModifier);
         float dmg1 = percent * Math.min(Constants.PERCENTAGE_BASE_HP * r.getBaseHP(), r.getHp());
         if (terrainUnderFeet == 'D') {
             dmg1 = dmg1 * Constants.LAND_MODIFIER_WIZARD;
         }
         dmg1 = Math.round(dmg1);
         float dmg2 = attackDeflect();
-        dmg2 = Math.round(dmg2 * (Constants.DEFLECT_MULTIPLIER_ROGUE + angelDmgModifier + strategyModifier));
+        dmg2 = Math.round(dmg2
+                * (Constants.DEFLECT_MULTIPLIER_ROGUE + angelDmgModifier + strategyModifier));
         return dmg1 + dmg2;
     }
     // calculate dmg for Knight
     public final float attack(final Knight k) {
         float percent = attackDrain();
-        percent = (Constants.DRAIN_MULTIPLIER_KNIGHT + angelDmgModifier + strategyModifier) * percent;
+        percent = percent
+                * (Constants.DRAIN_MULTIPLIER_KNIGHT + angelDmgModifier + strategyModifier);
         float dmg1 = percent * Math.min(Constants.PERCENTAGE_BASE_HP * k.getBaseHP(), k.getHp());
         if (terrainUnderFeet == 'D') {
             dmg1 = dmg1 * Constants.LAND_MODIFIER_WIZARD;
         }
         dmg1 = Math.round(dmg1);
         float dmg2 = attackDeflect();
-        dmg2 = Math.round(dmg2 * (Constants.DEFLECT_MULTIPLIER_KNIGHT + angelDmgModifier + strategyModifier));
+        dmg2 = Math.round(dmg2
+                * (Constants.DEFLECT_MULTIPLIER_KNIGHT + angelDmgModifier + strategyModifier));
         return dmg1 + dmg2;
     }
     // calculate dmg for Pyromancer
     public final float attack(final Pyromancer p) {
         float percent = attackDrain();
-        percent = (Constants.DRAIN_MULTIPLIER_PYRO + angelDmgModifier + strategyModifier) * percent;
+        percent = percent
+                * (Constants.DRAIN_MULTIPLIER_PYRO + angelDmgModifier + strategyModifier);
         float dmg1 = percent * Math.min(Constants.PERCENTAGE_BASE_HP * p.getBaseHP(), p.getHp());
         if (terrainUnderFeet == 'D') {
             dmg1 = dmg1 * Constants.LAND_MODIFIER_WIZARD;
         }
         dmg1 = Math.round(dmg1);
         float dmg2 = attackDeflect();
-        dmg2 = Math.round(dmg2 * (Constants.DEFLECT_MULTIPLIER_PYRO + angelDmgModifier + strategyModifier));
+        dmg2 = Math.round(dmg2
+                * (Constants.DEFLECT_MULTIPLIER_PYRO + angelDmgModifier + strategyModifier));
         return dmg1 + dmg2;
     }
     // calculate dmg for Wizard
     public final float attack(final Wizard w) {
         float percent = attackDrain();
-        System.out.println(Constants.DRAIN_MULTIPLIER_WIZARD +" "+ angelDmgModifier +" "+ strategyModifier);
-        percent = (Constants.DRAIN_MULTIPLIER_WIZARD + angelDmgModifier + strategyModifier) * percent;
+        percent = percent
+                * (Constants.DRAIN_MULTIPLIER_WIZARD + angelDmgModifier + strategyModifier);
         float dmg = percent * Math.min(Constants.PERCENTAGE_BASE_HP * w.getBaseHP(), w.getHp());
         if (terrainUnderFeet == 'D') {
             dmg = dmg * Constants.LAND_MODIFIER_WIZARD;
         }
         return Math.round(dmg);
     }
-
-    public void chooseStrategy() {
-        if (getBaseHP() / 4 < getHp() && getBaseHP() / 2 > getHp()) { // (1/4 * MAX_LEVEL_HP) < CURRENT_HP < (1/2 * MAX_LEVEL_HP)
-            setStrategy(new Strategy_1(0.1f,0.6f));
-        } else if (getHp() < getBaseHP() / 4) { // CURRENT_HP < (1/3 * MAX_LEVEL_HP)
-            setStrategy(new Strategy_2(0.2f,0.2f));
+    // method chooses right strategy
+    public final void chooseStrategy() {
+        // (1/4 * MAX_LEVEL_HP) < CURRENT_HP < (1/2 * MAX_LEVEL_HP)
+        if (getBaseHP() / Constants.W_STRAT_LOW < getHp()
+                && getBaseHP() / Constants.W_STRAT_HIGH > getHp()) {
+            setStrategy(new Strategy1(Constants.MOD_01, Constants.MOD_06));
+            // CURRENT_HP < (1/4 * MAX_LEVEL_HP)
+        } else if (getHp() < getBaseHP() / Constants.W_STRAT_LOW) {
+            setStrategy(new Strategy2(Constants.MOD_02, Constants.MOD_02));
         } else {
-            setStrategy(new DefaultStrategy(0,0));
+            setStrategy(new DefaultStrategy());
         }
     }
 }

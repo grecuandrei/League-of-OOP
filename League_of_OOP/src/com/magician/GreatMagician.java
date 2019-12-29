@@ -2,15 +2,13 @@ package magician;
 
 import angels.Angel;
 import heroes.Hero;
-
 import java.io.BufferedWriter;
 import java.io.IOException;
-
 
 public class GreatMagician implements Observer {
     private BufferedWriter writer;
 
-    public void setWriter(BufferedWriter writer) {
+    public final void setWriter(final BufferedWriter writer) {
         this.writer = writer;
     }
 
@@ -23,13 +21,14 @@ public class GreatMagician implements Observer {
      * @param arg an argument passed to the {@code notifyObservers}
      */
     @Override
-    public void update(Object arg) throws IOException {
-        writer.write("Angel " + ((Angel) arg).getName() + " was spawned at " + ((Angel) arg).getX() + " " + ((Angel) arg).getY());
+    public final void update(final Object arg) throws IOException {
+        writer.write("Angel " + ((Angel) arg).getName() + " was spawned at "
+                + ((Angel) arg).getX() + " " + ((Angel) arg).getY());
         writer.newLine();
     }
 
     @Override
-    public void updateHero(Object o, Angel a) throws IOException {
+    public final void updateHero(final Object o, final Angel a) throws IOException {
         String name;
         switch (((Hero) o).getName()) {
             case "K":
@@ -53,7 +52,7 @@ public class GreatMagician implements Observer {
     }
 
     @Override
-    public void updateDead(Object o) throws IOException {
+    public final void updateDead(final Object o) throws IOException {
         String name;
         switch (((Hero) o).getName()) {
             case "K":
@@ -68,12 +67,13 @@ public class GreatMagician implements Observer {
             default:
                 name = "Wizard";
         }
-        writer.write("Player " + name + " " + ((Hero) o).getOrdLine() + " was killed by an angel");
+        writer.write("Player " + name + " " + ((Hero) o).getOrdLine()
+                + " was killed by an angel");
         writer.newLine();
     }
 
     @Override
-    public void updateAlive(Object o) throws IOException {
+    public final void updateAlive(final Object o) throws IOException {
         String name;
         switch (((Hero) o).getName()) {
             case "K":
@@ -88,12 +88,13 @@ public class GreatMagician implements Observer {
             default:
                 name = "Wizard";
         }
-        writer.write("Player " + name + " " + ((Hero) o).getOrdLine() + " was brought to life by an angel");
+        writer.write("Player " + name + " " + ((Hero) o).getOrdLine()
+                + " was brought to life by an angel");
         writer.newLine();
     }
 
     @Override
-    public void updateFight(Object o, Hero h) throws IOException {
+    public final void updateFight(final Object o, final Hero h) throws IOException {
         String name1, name2;
         switch (((Hero) o).getName()) {
             case "K":
@@ -121,12 +122,13 @@ public class GreatMagician implements Observer {
             default:
                 name2 = "Wizard";
         }
-        writer.write("Player " + name1 + " " + ((Hero) o).getOrdLine() + " was killed by " + name2 + " " + h.getOrdLine());
+        writer.write("Player " + name1 + " " + ((Hero) o).getOrdLine()
+                + " was killed by " + name2 + " " + h.getOrdLine());
         writer.newLine();
     }
 
     @Override
-    public void updateLevelUp(Object o) throws IOException {
+    public final void updateLevelUp(final Object o) throws IOException {
         String name;
         switch (((Hero) o).getName()) {
             case "K":
@@ -141,7 +143,8 @@ public class GreatMagician implements Observer {
             default:
                 name = "Wizard";
         }
-        writer.write(name + " " + ((Hero) o).getOrdLine() + " reached level " + ((Hero) o).getLevel());
+        writer.write(name + " " + ((Hero) o).getOrdLine()
+                + " reached level " + ((Hero) o).getLevel());
         writer.newLine();
     }
 }

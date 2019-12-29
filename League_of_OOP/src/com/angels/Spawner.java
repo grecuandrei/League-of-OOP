@@ -1,5 +1,6 @@
 package angels;
 
+import constants.Constants;
 import heroes.Knight;
 import heroes.Pyromancer;
 import heroes.Rogue;
@@ -10,23 +11,23 @@ public class Spawner extends Angel {
         isGood = true;
     }
 
-    public void apply(Knight k) {
+    public final void apply(final Knight k) {
         k.setDead(false);
-        k.setHp(200);
+        k.setHp(Constants.SPAWNER_KNIGHT);
     }
 
-    public void apply(Pyromancer p) {
+    public final void apply(final Pyromancer p) {
         p.setDead(false);
-        p.setHp(150);
+        p.setHp(Constants.SPAWNER_PYRO);
     }
 
-    public void apply(Rogue r) {
+    public final void apply(final Rogue r) {
         r.setDead(false);
-        r.setHp(180);
+        r.setHp(Constants.SPAWNER_ROGUE);
     }
 
-    public void apply(Wizard w) {
+    public final void apply(final Wizard w) {
         w.setDead(false);
-        w.setHp(120);
+        w.setHp(Constants.SPAWNER_WIZARD);
     }
 }

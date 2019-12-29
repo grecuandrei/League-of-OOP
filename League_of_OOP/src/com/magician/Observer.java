@@ -2,7 +2,6 @@ package magician;
 
 import angels.Angel;
 import heroes.Hero;
-
 import java.io.IOException;
 
 public interface Observer {

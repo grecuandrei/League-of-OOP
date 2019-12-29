@@ -3,8 +3,8 @@ package heroes;
 import angels.Angel;
 import constants.Constants;
 import strategy.DefaultStrategy;
-import strategy.Strategy_1;
-import strategy.Strategy_2;
+import strategy.Strategy1;
+import strategy.Strategy2;
 
 import java.io.IOException;
 
@@ -22,11 +22,9 @@ public class Rogue extends Hero {
     public final float acceptAttack(final Hero h) {
         return h.attack(this);
     }
-
+    // accept angel
     public final void acceptAngel(final Angel a) throws IOException {
-        if (!this.isDead()) {
-            a.apply(this);
-        }
+        a.apply(this);
     }
     // implementation of first attack
     private float attackBackstab() {
@@ -60,58 +58,66 @@ public class Rogue extends Hero {
     // calculate dmg for Rogue
     public final float attack(final Rogue r) {
         float dmg1 = attackBackstab();
-        dmg1 = Math.round(dmg1 * (Constants.BACKSTAB_MULTIPLIER_ROGUE + angelDmgModifier + strategyModifier));
+        dmg1 = Math.round(dmg1
+                * (Constants.BACKSTAB_MULTIPLIER_ROGUE + angelDmgModifier + strategyModifier));
         float dmg2 = attackParalysis();
-        dmg2 = Math.round(dmg2 * (Constants.PARALYSIS_MULTIPLIER_ROGUE + angelDmgModifier + strategyModifier));
+        dmg2 = Math.round(dmg2
+                * (Constants.PARALYSIS_MULTIPLIER_ROGUE + angelDmgModifier + strategyModifier));
         modifyOvtDmg(r, dmg2);
         return dmg1 + dmg2;
     }
     // calculate dmg for Knight
     public final float attack(final Knight k) {
         float dmg1 = attackBackstab();
-        dmg1 = Math.round(dmg1 * (Constants.BACKSTAB_MULTIPLIER_KNIGHT + angelDmgModifier + strategyModifier));
+        dmg1 = Math.round(dmg1
+                * (Constants.BACKSTAB_MULTIPLIER_KNIGHT + angelDmgModifier + strategyModifier));
         float dmg2 = attackParalysis();
-        dmg2 = Math.round(dmg2 * (Constants.PARALYSIS_MULTIPLIER_KNIGHT + angelDmgModifier + strategyModifier));
+        dmg2 = Math.round(dmg2
+                * (Constants.PARALYSIS_MULTIPLIER_KNIGHT + angelDmgModifier + strategyModifier));
         modifyOvtDmg(k, dmg2);
         return dmg1 + dmg2;
     }
     // calculate dmg for Pyromancer
     public final float attack(final Pyromancer p) {
         float dmg1 = attackBackstab();
-        dmg1 = Math.round(dmg1 * (Constants.BACKSTAB_MULTIPLIER_PYRO + angelDmgModifier + strategyModifier));
+        dmg1 = Math.round(dmg1
+                * (Constants.BACKSTAB_MULTIPLIER_PYRO + angelDmgModifier + strategyModifier));
         float dmg2 = attackParalysis();
-        dmg2 = Math.round(dmg2 * (Constants.PARALYSIS_MULTIPLIER_PYRO + angelDmgModifier + strategyModifier));
+        dmg2 = Math.round(dmg2
+                * (Constants.PARALYSIS_MULTIPLIER_PYRO + angelDmgModifier + strategyModifier));
         modifyOvtDmg(p, dmg2);
         return dmg1 + dmg2;
     }
     // calculate dmg for Wizard
     public final float attack(final Wizard w) {
         float dmg1 = attackBackstab();
-        dmg1 = Math.round(dmg1 * (Constants.BACKSTAB_MULTIPLIER_WIZARD + angelDmgModifier + strategyModifier));
+        dmg1 = Math.round(dmg1
+                * (Constants.BACKSTAB_MULTIPLIER_WIZARD + angelDmgModifier + strategyModifier));
         float dmg2 = attackParalysis();
-        dmg2 = Math.round(dmg2 * (Constants.PARALYSIS_MULTIPLIER_WIZARD + angelDmgModifier + strategyModifier));
+        dmg2 = Math.round(dmg2
+                * (Constants.PARALYSIS_MULTIPLIER_WIZARD + angelDmgModifier + strategyModifier));
         modifyOvtDmg(w, dmg2);
         return dmg1 + dmg2;
     }
     // method that modifies the overtime parameters
     private void modifyOvtDmg(final Hero h, final float dmg) {
-//        float dmg = Constants.PARALISED_BASE_DMG +
-//                Constants.PARALISED_MULTIPLIER * getLevel();
-//        System.out.println("-------------------------------Rogue damage: " + dmg);
         h.setIncap(false);
         h.setIgnited(false, 0, 0);
         // if it's on a terrain favorable for Rogue, the paralize will take 6 rounds, instead of 3
         h.setParalyzed(true, dmg, terrainUnderFeet == 'W'
                 ? Constants.MAX_ROUNDS : Constants.MIN_ROUNDS);
     }
-
-    public void chooseStrategy() {
-        if (getBaseHP() / 7 < getHp() && getBaseHP() / 5 > getHp()) { // (1/7 * MAX_LEVEL_HP) < CURRENT_HP < (1/5 * MAX_LEVEL_HP)
-            setStrategy(new Strategy_1((float)(1/7),0.4f));
-        } else if (getHp() < getBaseHP() / 7) { // CURRENT_HP < (1/7 * MAX_LEVEL_HP)
-            setStrategy(new Strategy_2(0.5f,0.1f));
+    // method chooses the right strategy
+    public final void chooseStrategy() {
+        // (1/7 * MAX_LEVEL_HP) < CURRENT_HP < (1/5 * MAX_LEVEL_HP)
+        if (getBaseHP() / Constants.R_STRAT_LOW < getHp()
+                && getBaseHP() / Constants.R_STRAT_HIGH > getHp()) {
+            setStrategy(new Strategy1((float) (1 / Constants.R_STRAT_LOW), Constants.MOD_04));
+            // CURRENT_HP < (1/7 * MAX_LEVEL_HP)
+        } else if (getHp() < getBaseHP() / Constants.R_STRAT_LOW) {
+            setStrategy(new Strategy2(Constants.MOD_05, Constants.MOD_01));
         } else {
-            setStrategy(new DefaultStrategy(0,0));
+            setStrategy(new DefaultStrategy());
         }
     }
 }

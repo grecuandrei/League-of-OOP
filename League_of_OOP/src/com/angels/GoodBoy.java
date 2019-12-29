@@ -1,5 +1,6 @@
 package angels;
 
+import constants.Constants;
 import heroes.Knight;
 import heroes.Pyromancer;
 import heroes.Rogue;
@@ -10,23 +11,23 @@ public class GoodBoy extends Angel {
         isGood = true;
     }
 
-    public void apply(Knight k) {
-        k.setAngelDmgModifier(k.getAngelDmgModifier() + 0.4f);
-        k.setHp(k.getHp() + 20);
+    public final void apply(final Knight k) {
+        k.setAngelDmgModifier(k.getAngelDmgModifier() + Constants.GB_KNIGHT_MOD);
+        k.setHp(k.getHp() + Constants.GB_KNIGHT);
     }
 
-    public void apply(Pyromancer p) {
-        p.setAngelDmgModifier(p.getAngelDmgModifier() + 0.5f);
-        p.setHp(p.getHp() + 30);
+    public final void apply(final Pyromancer p) {
+        p.setAngelDmgModifier(p.getAngelDmgModifier() + Constants.GB_PYRO_MOD);
+        p.setHp(p.getHp() + Constants.GB_PYRO);
     }
 
-    public void apply(Rogue r) {
-        r.setAngelDmgModifier(r.getAngelDmgModifier() + 0.4f);
-        r.setHp(r.getHp() + 40);
+    public final void apply(final Rogue r) {
+        r.setAngelDmgModifier(r.getAngelDmgModifier() + Constants.GB_ROGUE_MOD);
+        r.setHp(r.getHp() + Constants.GB_ROGUE);
     }
 
-    public void apply(Wizard w) {
-        w.setAngelDmgModifier(w.getAngelDmgModifier() + 0.3f);
-        w.setHp(w.getHp() + 50);
+    public final void apply(final Wizard w) {
+        w.setAngelDmgModifier(w.getAngelDmgModifier() + Constants.GB_WIZARD_MOD);
+        w.setHp(w.getHp() + Constants.GB_WIZARD);
     }
 }

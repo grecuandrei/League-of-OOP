@@ -1,5 +1,6 @@
 package angels;
 
+import constants.Constants;
 import heroes.Knight;
 import heroes.Pyromancer;
 import heroes.Rogue;
@@ -10,23 +11,23 @@ public class Dracula extends Angel {
         isGood = false;
     }
 
-    public void apply(Knight k) {
-        k.setAngelDmgModifier(k.getAngelDmgModifier() - 0.2f);
-        k.setHp(k.getHp() - 60);
+    public final void apply(final Knight k) {
+        k.setAngelDmgModifier(k.getAngelDmgModifier() - Constants.DRAC_KNIGHT_MOD);
+        k.setHp(k.getHp() - Constants.DRAC_KNIGHT);
     }
 
-    public void apply(Pyromancer p) {
-        p.setAngelDmgModifier(p.getAngelDmgModifier() - 0.3f);
-        p.setHp(p.getHp() - 40);
+    public final void apply(final Pyromancer p) {
+        p.setAngelDmgModifier(p.getAngelDmgModifier() - Constants.DRAC_PYRO_MOD);
+        p.setHp(p.getHp() - Constants.DRAC_PYRO);
     }
 
-    public void apply(Rogue r) {
-        r.setAngelDmgModifier(r.getAngelDmgModifier() - 0.1f);
-        r.setHp(r.getHp() - 35);
+    public final void apply(final Rogue r) {
+        r.setAngelDmgModifier(r.getAngelDmgModifier() - Constants.DRAC_ROGUE_MOD);
+        r.setHp(r.getHp() - Constants.DRAC_ROGUE);
     }
 
-    public void apply(Wizard w) {
-        w.setAngelDmgModifier(w.getAngelDmgModifier() - 0.4f);
-        w.setHp(w.getHp() - 20);
+    public final void apply(final Wizard w) {
+        w.setAngelDmgModifier(w.getAngelDmgModifier() - Constants.DRAC_WIZARD_MOD);
+        w.setHp(w.getHp() - Constants.DRAC_WIZARD);
     }
 }

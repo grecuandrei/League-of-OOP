@@ -10,19 +10,19 @@ public class TheDoomer extends Angel {
         isGood = false;
     }
 
-    public void apply(Knight k) {
+    public final void apply(final Knight k) {
         k.setDead(true);
     }
 
-    public void apply(Pyromancer p) {
+    public final void apply(final Pyromancer p) {
         p.setDead(true);
     }
 
-    public void apply(Rogue r) {
+    public final void apply(final Rogue r) {
         r.setDead(true);
     }
 
-    public void apply(Wizard w) {
+    public final void apply(final Wizard w) {
         w.setDead(true);
     }
 }

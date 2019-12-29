@@ -2,9 +2,9 @@ package main;
 
 import angels.Angel;
 import angels.AngelsFactory;
+import constants.Constants;
 import heroes.Hero;
 import heroes.HeroFactory;
-import heroes.Knight;
 import magician.GreatMagician;
 import map.Map;
 
@@ -57,17 +57,17 @@ public class Game {
                 heroes.get(heroes.size() - 1).setTerrainUnderFeet(
                         map.getTerrain(heroes.get(heroes.size() - 1).getX(),
                                 heroes.get(heroes.size() - 1).getY()));
-                heroes.get(heroes.size() - 1).Attach(magician);
+                heroes.get(heroes.size() - 1).attach(magician);
                 heroes.get(heroes.size() - 1).setOrdLine(i);
             }
             // Do the rounds - play the game
             int nrRounds = sr.nextInt();
             sr.nextLine();
-
+            // take the moves per round
             for (int i = 0; i < nrRounds; ++i) {
                 movess.add(sr.nextLine());
             }
-            
+            // create the angels
             for (int i = 0; i < nrRounds; ++i) {
                 int angelsNr;
                 String angelsData;
@@ -76,38 +76,39 @@ public class Game {
                 if (angelsNr != 0) {
                     angelsData = sr.nextLine();
                     angelsParts = angelsData.split("\\s|,");
-                    for (int j = 1; j <= angelsNr*3; j+=3) {
+                    for (int j = 1; j <= angelsNr * Constants.ANGEL_PARTS;
+                         j += Constants.ANGEL_PARTS) {
                         Angel angel = af.getAngel(angelsParts[j].replaceAll("\\s", ""));
                         angel.setName(angelsParts[j].replaceAll("\\s", ""));
                         angel.setRound(i);
-                        angel.setX(Integer.parseInt(angelsParts[j+1]));
-                        angel.setY(Integer.parseInt(angelsParts[j+2]));
-                        angel.Attach(magician);
+                        angel.setX(Integer.parseInt(angelsParts[j + 1]));
+                        angel.setY(Integer.parseInt(angelsParts[j + 2]));
+                        angel.attach(magician);
                         angels.add(angel);
                     }
-                    
                 }
             }
-            
             // the start of the rounds
             for (int i = 0; i < nrRounds; ++i) {
-                
-                writeStartOfRound(writer, i+1);
-                
+                // write the start of the round
+                writeStartOfRound(writer, i + 1);
+                // arrays to save the xp and the level for Spawner
+                int[] levelAtStartRound = new int[nrPlayers];
+                int[] xpAtStartRound = new int[nrPlayers];
                 for (Hero h:heroes) {
-                    System.out.println(h.getName() + " " + h.getHp() + " " +h.getX()+" "+h.getY());
+                    // apply for every player the overtime damage
+                    if (!h.isDead() && h.getRoundsApply() >= 0) {
+                        applyOvertimeDmg(h);
+                    }
+                    // hero and the strategies
+                    levelAtStartRound[h.getOrdLine()] = h.getLevel();
+                    xpAtStartRound[h.getOrdLine()] = h.getXp();
+                    if (!h.isIncap() && !h.isParalyzed()) {
+                        h.chooseStrategy();
+                        h.doStrategy();
+                    }
                 }
-                System.out.println();
-
-                // hero and the strategies
-                for (Hero h:heroes) {
-                    h.chooseStrategy();
-                    h.doStrategy();
-                }
-                
                 String moves = movess.get(i);
-                System.out.println(moves);
-                
                 int j = 0;
                 for (Hero h:heroes) {
                     // if it is not dead, incapacitated or paralized, move the player
@@ -125,104 +126,14 @@ public class Game {
                     }
                     j++;
                 }
-                // apply for every player the overtime damage
-                for (Hero h:heroes) {
-                    if (!h.isDead() && h.getRoundsApply() >= 0) {
-                        applyOvertimeDmg(h);
-                    }
-                }
-                // for every player
-                for (Hero h1:heroes) {
-                    // if it is not dead or had a fight this round
-                    if (!h1.isAttacked() && !h1.isDead()) {
-                        // check if another hero is on the same terrain and play the fight
-                        for (Hero h2 : heroes) {
-                            if (!h1.equals(h2) && h1.getX() == h2.getX()
-                                    && h1.getY() == h2.getY() && !h2.isDead()) {
-                                // set that there are fighting
-                                h1.setAttacked(true);
-                                h2.setAttacked(true);
-                                // calculate the damage if one of them is a wizard
-                                h1.setDmgInflicted(Math.round(h2.calculateFlatDmg()));
-                                h2.setDmgInflicted(Math.round(h1.calculateFlatDmg()));
-                                // calculate the damage that will be dispersed on the other
-                                // h1.accept(h2) -> h2.attack(h1)
-                                float dmgPlayer1 = Math.round(h1.acceptAttack(h2));
-                                // h2.accept(h1) -> h1.attack(h2)
-                                float dmgPlayer2 = Math.round(h2.acceptAttack(h1));
-                                
-//                                if (h1.getX() == 3 && h1.getY() == 13) {
-//                                    System.out.println(h1.getName() + " "+h1.getHp()+" "+dmgPlayer2+" "+h1.getDmgOvertime() + " "+h1.getLevel());
-//                                    System.out.println(h2.getName() + " "+h2.getHp()+" "+dmgPlayer1+" "+h2.getDmgOvertime()+ " "+h2.getLevel());
-//                                    System.out.println();
-//                                }
-                                
-                                // deal the damage
-                                h1.dealDMG(h2, dmgPlayer2);
-                                h2.dealDMG(h1, dmgPlayer1);
-                                // see if someone died
-                                if (h2.isDead()) {
-                                    h2.NotifyDeadInCombat(h1);
-                                }
-                                if (h1.isDead()) {
-                                    h1.NotifyDeadInCombat(h2);
-                                }
-                                // give xp and if needed update the health
-                                int lvlBefore1 = h1.getLevel();
-                                int lvlBefore2 = h2.getLevel();
-                                h1.levelUP();
-                                h2.levelUP();
-//                                if (lvlBefore1 != h1.getLevel()) {
-//                                    h1.NotifyLevelUp();
-//                                }
-//                                if (lvlBefore2 != h2.getLevel()) {
-//                                    h2.NotifyLevelUp();
-//                                }
-                            }
-                        }
-                    }
-                }
+                // do the battles
+                battles(xpAtStartRound, levelAtStartRound);
                 // uncheck the field that says they were fighting for this rounds\
                 for (Hero h:heroes) {
                     h.setAttacked(false);
-                    System.out.println(h.getName() + " " + h.getLevel() + " " + h.getXp() + " " + h.getHp());
                 }
                 // introduce the angels
-                for (Angel a:angels) {
-                    if (a.getRound() == i) {
-                        a.Notify(); // notify is only for angels
-                        for (Hero h : heroes) {
-                            if (a.getX() == h.getX() && a.getY() == h.getY()) {
-                                if (!h.isDead() && !a.getName().equalsIgnoreCase("Spawner")) {
-                                    System.out.println(a.getName() + " " + h.getName());
-                                    int lvlBefore = h.getLevel();
-                                    h.acceptAngel(a);
-                                    h.NotifyHero(a); // hero was hit/helped by a certain angel
-                                    if (h.isDead()) {
-                                        h.NotifyDeadHero(); // hero was killed by a angel
-                                    }
-                                    
-//                                    if (h instanceof Knight)
-//                                        System.out.println(h.getLevel() + " " + h.getXp() + " " + h.getHp());
-                                    if (a.getName().equalsIgnoreCase("LevelUpAngel")) {
-                                        h.levelUP();
-                                    }
-//                                    if (h instanceof Knight)
-//                                        System.out.println(h.getLevel() + " " + h.getXp() + " " + h.getHp());
-//                                    System.out.println();
-                                    
-                                    if (a.getName().equalsIgnoreCase("XPAngel")) {
-                                        h.levelUP();
-                                    }
-                                } else if (h.isDead() && a.getName().equalsIgnoreCase("Spawner")) {
-                                    h.acceptAngel(a);
-                                    h.NotifyHero(a); // hero was helped by a certain angel (in this case Spawner)
-                                    h.NotifyAliveHero(); // hero was resurrected by the Spawner
-                                }
-                            }
-                        }
-                    }
-                }
+                applyAngels(i, levelAtStartRound, xpAtStartRound);
             }
             sr.close();
             writeToFile(writer);
@@ -262,6 +173,92 @@ public class Game {
                 break;
             default:
                 break;
+        }
+    }
+    // doing the battles for a round
+    private void battles(final int[] xpAtStartRound,
+                         final int[] levelAtStartRound) throws IOException {
+        // for every player
+        for (Hero h1:heroes) {
+            // if it is not dead or had a fight this round
+            if (!h1.isAttacked() && !h1.isDead()) {
+                // check if another hero is on the same terrain and play the fight
+                for (Hero h2 : heroes) {
+                    if (!h1.equals(h2) && h1.getX() == h2.getX()
+                            && h1.getY() == h2.getY() && !h2.isDead()) {
+                        // set that there are fighting
+                        h1.setAttacked(true);
+                        h2.setAttacked(true);
+                        // calculate the damage if one of them is a wizard
+                        h1.setDmgInflicted(Math.round(h2.calculateFlatDmg()));
+                        h2.setDmgInflicted(Math.round(h1.calculateFlatDmg()));
+                        // calculate the damage that will be dispersed on the other
+                        // h1.accept(h2) -> h2.attack(h1)
+                        float dmgPlayer1 = Math.round(h1.acceptAttack(h2));
+                        // h2.accept(h1) -> h1.attack(h2)
+                        float dmgPlayer2 = Math.round(h2.acceptAttack(h1));
+                        // deal the damage
+                        h1.dealDMG(h2, dmgPlayer2);
+                        h2.dealDMG(h1, dmgPlayer1);
+                        // see if someone died
+                        if (h2.isDead()) {
+                            h2.notifyDeadInCombat(h1);
+                        }
+                        if (h1.isDead()) {
+                            h1.notifyDeadInCombat(h2);
+                        }
+                        // give xp and if needed update the health
+                        h1.levelUP();
+                        h2.levelUP();
+                        if (!h2.isDead()) {
+                            levelAtStartRound[h2.getOrdLine()] = h2.getLevel();
+                            xpAtStartRound[h2.getOrdLine()] = h2.getXp();
+                        }
+                        if (!h1.isDead()) {
+                            levelAtStartRound[h1.getOrdLine()] = h1.getLevel();
+                            xpAtStartRound[h1.getOrdLine()] = h1.getXp();
+                        }
+                    }
+                }
+            }
+        }
+    }
+    // introducing the angels
+    private void applyAngels(final int round, final int[] levelAtStartRound,
+                             final int[] xpAtStartRound) throws IOException {
+        for (Angel a:angels) {
+            if (a.getRound() == round) {
+                a.notifyAngel(); // notify is only for angels
+                for (Hero h : heroes) {
+                    if (a.getX() == h.getX() && a.getY() == h.getY()) {
+                        if (!h.isDead() && !a.getName().equalsIgnoreCase("Spawner")) {
+                            h.acceptAngel(a);
+                            h.notifyHero(a); // hero was hit/helped by a certain angel
+                            if (h.getHp() <= 0) {
+                                h.setDead(true);
+                            }
+                            if (h.isDead()) {
+                                h.notifyDeadHero(); // hero was killed by a angel
+                            }
+
+                            if (a.getName().equalsIgnoreCase("LevelUpAngel")) {
+                                h.levelUP();
+                            }
+
+                            if (a.getName().equalsIgnoreCase("XPAngel")) {
+                                h.levelUP();
+                            }
+                        } else if (h.isDead() && a.getName().equalsIgnoreCase("Spawner")) {
+                            h.acceptAngel(a);
+                            // hero was helped by a certain angel (in this case Spawner)
+                            h.notifyHero(a);
+                            h.notifyAliveHero(); // hero was resurrected by the Spawner
+                            h.setLevel(levelAtStartRound[h.getOrdLine()]);
+                            h.setXp(xpAtStartRound[h.getOrdLine()]);
+                        }
+                    }
+                }
+            }
         }
     }
     // function that applies the overtime damage for every player

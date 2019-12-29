@@ -34,7 +34,7 @@ public abstract class Hero implements SubjectHero {
         return xp;
     }
 
-    public void setXp(int xp) {
+    public final void setXp(final int xp) {
         this.xp = xp;
     }
 
@@ -67,7 +67,8 @@ public abstract class Hero implements SubjectHero {
     }
     // the method calculates the new hp
     public final void resetHp() {
-        hp = baseHP + multiplier * level;
+        hp = baseHP + multiplier;
+        baseHP = hp;
     }
 
     public final boolean isDead() {
@@ -126,11 +127,11 @@ public abstract class Hero implements SubjectHero {
         this.y = y;
     }
 
-    public int getOrdLine() {
+    public final int getOrdLine() {
         return ordLine;
     }
 
-    public void setOrdLine(int ordLine) {
+    public final void setOrdLine(final int ordLine) {
         this.ordLine = ordLine;
     }
 
@@ -157,7 +158,6 @@ public abstract class Hero implements SubjectHero {
     public final float getDmgOvertime() {
         return dmgOvertime;
     }
-    
     public final int getRoundsApply() {
         return roundsApply;
     }
@@ -166,22 +166,25 @@ public abstract class Hero implements SubjectHero {
         this.roundsApply = roundsApply;
     }
 
-    public void setAngelDmgModifier(float angelDmgModifier) {
+    public final void setAngelDmgModifier(final float angelDmgModifier) {
         this.angelDmgModifier = angelDmgModifier;
+        this.angelDmgModifier = Math.round(this.angelDmgModifier * Constants.PRECISION)
+                / Constants.PRECISION;
     }
 
-    public float getAngelDmgModifier() {
+    public final float getAngelDmgModifier() {
         return angelDmgModifier;
     }
 
-    public float getStrategyModifier() {
+    public final float getStrategyModifier() {
         return strategyModifier;
     }
 
-    public void setStrategyModifier(float strategyModifier) {
+    public final void setStrategyModifier(final float strategyModifier) {
         this.strategyModifier = strategyModifier;
+        this.strategyModifier = Math.round(this.strategyModifier * Constants.PRECISION)
+                / Constants.PRECISION;
     }
-
     /**
      * A part of the double dispatch specialized for Pyromancer.
      * @param p = the hero the attack will be upon
@@ -223,14 +226,12 @@ public abstract class Hero implements SubjectHero {
     public float acceptAttack(final Hero h) {
         return 0;
     }
-    
-    public void acceptAngel(Angel a) throws IOException { }
-    
+    public void acceptAngel(final Angel a) throws IOException { }
     /**
      * Method that calculates the base damage to be more intuitive.
      * Easier to parse the damage that will be dealt for the wizard.
      * To take and process the damage, so he can apply it accordingly.
-     * @return
+     * @return will be the bare damage
      */
     public float calculateFlatDmg() {
         return 0;
@@ -245,8 +246,10 @@ public abstract class Hero implements SubjectHero {
     }
     // calculates the xp for the winner
     public final void xpWinner(final int loserLvl) {
+        System.out.println(ordLine + " " + level + " " + xp + " " + loserLvl);
         xp = xp + max(0, Constants.BASE_XP_XP_WINNER - (level - loserLvl)
                 * Constants.MULTIPLIER_XP_WINNER);
+        System.out.println(ordLine + " " + level + " " + xp + " " + loserLvl);
     }
     // does the level up and resets hp if needed
     public final void levelUP() throws IOException {
@@ -254,50 +257,47 @@ public abstract class Hero implements SubjectHero {
             int levelUp = level;
             levelUp++;
             setLevel(levelUp);
-            NotifyLevelUp();
             if (!isDead()) {
                 resetHp();
+                notifyLevelUp();
             }
         }
     }
-    
-    public void doStrategy() {
+    public final void doStrategy() {
         hs.modifyHero(this);
     }
-    
-    public void setStrategy(HeroStrategy hs) {
-        this.hs = hs;
+    public final void setStrategy(final HeroStrategy s) {
+        this.hs = s;
     }
-    
     public void chooseStrategy() { }
 
     @Override
-    public void Attach(Observer o) {
+    public final void attach(final Observer o) {
         magician = o;
     }
 
     @Override
-    public void NotifyHero(Angel a) throws IOException {
+    public final void notifyHero(final Angel a) throws IOException {
         magician.updateHero(this, a);
     }
 
     @Override
-    public void NotifyDeadHero() throws IOException {
+    public final void notifyDeadHero() throws IOException {
         magician.updateDead(this);
     }
 
     @Override
-    public void NotifyAliveHero() throws IOException {
+    public final void notifyAliveHero() throws IOException {
         magician.updateAlive(this);
     }
 
     @Override
-    public void NotifyDeadInCombat(Hero h) throws IOException {
+    public final void notifyDeadInCombat(final Hero h) throws IOException {
         magician.updateFight(this, h);
     }
 
     @Override
-    public void NotifyLevelUp() throws IOException {
+    public final void notifyLevelUp() throws IOException {
         magician.updateLevelUp(this);
     }
 }

@@ -1,5 +1,6 @@
 package angels;
 
+import constants.Constants;
 import heroes.Knight;
 import heroes.Pyromancer;
 import heroes.Rogue;
@@ -10,19 +11,19 @@ public class DamageAngel extends Angel {
         isGood = true;
     }
 
-    public void apply(Knight k) {
-        k.setAngelDmgModifier(k.getAngelDmgModifier() + 0.15f);
+    public final void apply(final Knight k) {
+        k.setAngelDmgModifier(k.getAngelDmgModifier() + Constants.DMGA_KNIGHT_MOD);
     }
 
-    public void apply(Pyromancer p) {
-        p.setAngelDmgModifier(p.getAngelDmgModifier() + 0.2f);
+    public final void apply(final Pyromancer p) {
+        p.setAngelDmgModifier(p.getAngelDmgModifier() + Constants.DMGA_PYRO_MOD);
     }
 
-    public void apply(Rogue r) {
-        r.setAngelDmgModifier(r.getAngelDmgModifier() + 0.3f);
+    public final void apply(final Rogue r) {
+        r.setAngelDmgModifier(r.getAngelDmgModifier() + Constants.DMGA_ROGUE_MOD);
     }
 
-    public void apply(Wizard w) {
-        w.setAngelDmgModifier(w.getAngelDmgModifier() + 0.4f);
+    public final void apply(final Wizard w) {
+        w.setAngelDmgModifier(w.getAngelDmgModifier() + Constants.DMGA_WIZARD_MOD);
     }
 }

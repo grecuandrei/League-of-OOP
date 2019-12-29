@@ -1,66 +1,67 @@
 package angels;
 
-import heroes.*;
+import heroes.Knight;
+import heroes.Rogue;
+import heroes.Pyromancer;
+import heroes.Wizard;
 import magician.Observer;
 import magician.SubjectAngel;
-
 import java.io.IOException;
 
-public abstract class Angel implements SubjectAngel{
+public abstract class Angel implements SubjectAngel {
     private String name;
-    private int X, Y, round;
+    private int x, y, round;
     private Observer magician;
     protected boolean isGood;
 
-    public String getName() {
+    public final String getName() {
         return name;
     }
 
-    public void setName(String name) {
+    public final void setName(final String name) {
         this.name = name;
     }
 
-    public int getX() {
-        return X;
+    public final int getX() {
+        return x;
     }
 
-    public void setX(int x) {
-        X = x;
+    public final void setX(final int xi) {
+        x = xi;
     }
 
-    public int getY() {
-        return Y;
+    public final int getY() {
+        return y;
     }
 
-    public void setY(int y) {
-        Y = y;
+    public final void setY(final int yi) {
+        y = yi;
     }
 
-    public int getRound() {
+    public final int getRound() {
         return round;
     }
 
-    public void setRound(int round) {
+    public final void setRound(final int round) {
         this.round = round;
     }
 
-    public boolean isGood() {
+    public final boolean isGood() {
         return isGood;
     }
 
-    public void apply(Knight k) throws IOException { }
+    public void apply(final Knight k) { }
 
-    public void apply(Pyromancer p) throws IOException { }
+    public void apply(final Pyromancer p) { }
 
-    public void apply(Rogue r) throws IOException { }
+    public void apply(final Rogue r) { }
 
-    public void apply(Wizard w) throws IOException { }
-    
-    public void Attach(Observer o) {
+    public void apply(final Wizard w) { }
+    public final void attach(final Observer o) {
         magician = o;
     }
 
-    public void Notify() throws IOException {
+    public final void notifyAngel() throws IOException {
         magician.update(this);
     }
 }
