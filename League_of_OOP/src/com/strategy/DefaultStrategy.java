@@ -2,16 +2,9 @@ package strategy;
 
 import heroes.Hero;
 // no modification to the current/basic strategy
-public class DefaultStrategy implements HeroStrategy{
-//    private float hpModifier, coefModifier;
-
-    public DefaultStrategy(float hpModifier, float coefModifier) {
-//        this.hpModifier = hpModifier;
-//        this.coefModifier = coefModifier;
-    }
-
+public class DefaultStrategy implements HeroStrategy {
     @Override
-    public void modifyHero(Hero h) {
+    public final void modifyHero(final Hero h) {
         h.setHp(h.getHp()); // hp==
         h.setStrategyModifier(h.getStrategyModifier()); // coef==
     }

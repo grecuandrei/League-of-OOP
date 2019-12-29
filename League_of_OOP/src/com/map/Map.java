@@ -9,7 +9,6 @@ public final class Map {
         Map.m = mm;
         map = new char[nn][mm];
     }
-    
     public static Map getInstance(final int nn, final int mm) {
         if (instance == null) {
             instance = new Map(nn, mm);
