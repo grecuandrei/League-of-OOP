@@ -13,13 +13,37 @@ Text : http://elf.cs.pub.ro/poo/teme/proiect/etapa1
 
 		heroes package:
 			HeroFactory --->  Hero --> Pyromancer
-			       			\---> Knight
+						\---> Knight
 						 \---> Wizard
-				 		  \--->	Rogue
+						  \--->	Rogue
 
+		angels package:
+			AngelsFactory ---> Angel --> DamageAngel
+						 \---> DarkAngel
+						  \---> Dracula
+						   \---> GoodBoy
+						    \---> etc
+										
+		magician package:
+			Observer ---> GreatMagician
+			SubjectAngel
+			SubjectHero
+			
+		strategy package:
+			HeroStrategy ---> Strategy1
+					 \---> Strategy2
+					  \---> DefaultStrategy
+			
 		constants package:
 			Constants
-
+	
+	Used Patterns:
+		Factory
+		Singleton
+		Strategy
+		Observer
+		Visitor - in DoubleDispatch
+	
 	Explanation:
 
 		Main: 
@@ -38,22 +62,26 @@ Text : http://elf.cs.pub.ro/poo/teme/proiect/etapa1
 			playGame:
 
 			The playGame method uses the InputFile to read all the data that it needs
-		and store the map in a map instance and heroes in an array of heroes.
+		and store the map in a map instance, heroes in an array of heroes, same for angels.
 			
-			In a for after the number of rounds, first the players move accordingly.
+			In a for after the number of rounds, first the players take the overtime damage.
 			
-			Then the overtime damage is applied.
+			Then they choose a strategy and move on the map.
 			
 			Next, we try to match every player to see if they have the same coordinates
-		as a another player. If so, they fight.
+		as a another player. If so, they fight. (in the battles method)
 			
 			If they fight, first we calculate the base damage inflicted to one another.
 
 			Then we calculate the damage, using Double Dispatch [1], for the heroes that are fighting.
 			
-			Apply the damage, level them up and reset the hp if needed.
+			Apply the damage, level them up and reset the hp if needed or notify the magician
+		if they are dead.
 
-			At the end of the rounds, print the output in the OutputFile.
+			Before the end of the round, the angels come in play and the magician
+		is notified accordingly. (applyAngels method)
+		
+			At the end of every round, print the output in the OutputFile.
 
 			moveHero:
 
@@ -70,6 +98,7 @@ Text : http://elf.cs.pub.ro/poo/teme/proiect/etapa1
 
 		Hero:
 			roundsApply : to store how many rounds the overtime damage should be applied
+			
 			dmgInflicted : to store the damage dealt by another hero, used by Wizard
 
 			dealDMG:
@@ -121,7 +150,21 @@ Text : http://elf.cs.pub.ro/poo/teme/proiect/etapa1
 					he uses the attack
 					- it paralyzes the victim and does damage overtime for 3 or 6 rounds,
 					depending on the terrain he is on
+		
+		AngelsFactory:
 
+			Implementation of the Factory pattern to create an Angel, without exposing
+		the creation logic.
+		
+		SubjectAngel/SubjectHero:
+		
+			They are interfaces to help make a difference between subject in the Observer pattern 
+		
+		HeroStrategy ---> Strategy1/Strategy2/DefaultStrategy
+		
+			Each class, that implements the HeroStrategy interface, has a method (modifyHero) that applies
+		modifications according to the strategy chosen by every hero at the start of a round.
+		
 		Constants:
 
 			File that has every constant used in the implementation.
@@ -139,11 +182,13 @@ Text : http://elf.cs.pub.ro/poo/teme/proiect/etapa1
 			When we are in a round and those two are fighting, we calculate the damage given from one
 		to another(dmgPlayer1).
 
-			h1 accepts the attack from h2. In h1, the method uses h2 and calls the method attack (like this: h2.attack(this))
-		applied to his instance, personalizing the attack. In h2, the attack takes place, calculating the damage for the specific
-		instance of h1.
+			h1 accepts the attack from h2. In h1, the method uses h2 and calls the method attack
+		(like this: h2.attack(this))
+		
+			applied to his instance, personalizing the attack. In h2, the attack takes place,
+		calculating the damage for the specific instance of h1.
 			
 			h1.acceptAttack(h2) --> h2.attack(this) --> attack(h1) in h1
 
 			That's how I implemented the Double Dispatch in my code that respects this modified version of visitor pattern.
-      
+
