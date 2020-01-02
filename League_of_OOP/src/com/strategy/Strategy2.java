@@ -1,7 +1,7 @@
 package strategy;
 
 import heroes.Hero;
-
+// second strategy
 public class Strategy2 implements HeroStrategy {
     private float hpModifier, coefModifier;
 

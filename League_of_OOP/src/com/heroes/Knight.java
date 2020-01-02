@@ -131,7 +131,7 @@ public class Knight extends Hero {
             // CURRENT_HP < (1/3 * MAX_LEVEL_HP)
         } else if (getHp() < getBaseHP() / Constants.K_STRAT_LOW) {
             setStrategy(new Strategy2(Constants.MOD_025, Constants.MOD_02));
-        } else {
+        } else { // nothing changes
             setStrategy(new DefaultStrategy());
         }
     }

@@ -1,7 +1,7 @@
 package strategy;
 
 import heroes.Hero;
-// no modification to the current/basic strategy
+// no modification to the current/basic strategy - nothing changes
 public class DefaultStrategy implements HeroStrategy {
     @Override
     public final void modifyHero(final Hero h) {

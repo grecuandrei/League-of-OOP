@@ -116,7 +116,7 @@ public class Rogue extends Hero {
             // CURRENT_HP < (1/7 * MAX_LEVEL_HP)
         } else if (getHp() < getBaseHP() / Constants.R_STRAT_LOW) {
             setStrategy(new Strategy2(Constants.MOD_05, Constants.MOD_01));
-        } else {
+        } else { // nothing changes
             setStrategy(new DefaultStrategy());
         }
     }

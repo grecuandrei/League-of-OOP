@@ -108,7 +108,7 @@ public class Wizard extends Hero {
             // CURRENT_HP < (1/4 * MAX_LEVEL_HP)
         } else if (getHp() < getBaseHP() / Constants.W_STRAT_LOW) {
             setStrategy(new Strategy2(Constants.MOD_02, Constants.MOD_02));
-        } else {
+        } else { // nothing changes
             setStrategy(new DefaultStrategy());
         }
     }

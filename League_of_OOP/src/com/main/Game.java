@@ -33,6 +33,7 @@ public class Game {
             // Map instantiation
             int n = sr.nextInt();
             int m = sr.nextInt();
+            // create the map
             Map map = Map.getInstance(n, m);
             sr.nextLine();
             for (int i = 0; i < m; ++i) {
@@ -101,9 +102,10 @@ public class Game {
                     if (!h.isDead() && h.getRoundsApply() >= 0) {
                         applyOvertimeDmg(h);
                     }
-                    // hero and the strategies
+                    // save level and xp before the round
                     levelAtStartRound[h.getOrdLine()] = h.getLevel();
                     xpAtStartRound[h.getOrdLine()] = h.getXp();
+                    // hero and the strategies
                     if (!h.isIncap() && !h.isParalyzed()) {
                         h.chooseStrategy();
                         h.doStrategy();
@@ -234,7 +236,7 @@ public class Game {
                     if (a.getX() == h.getX() && a.getY() == h.getY()) {
                         if (!h.isDead() && !a.getName().equalsIgnoreCase("Spawner")) {
                             h.acceptAngel(a);
-                            h.notifyHero(a); // hero was hit/helped by a certain angel
+                            h.notifyHero(a); // hero was hit/helped by an angel
                             if (h.getHp() <= 0) {
                                 h.setDead(true);
                             }
@@ -277,7 +279,6 @@ public class Game {
     // function that prints in the file the output
     private void writeToFile(final BufferedWriter writer)
     throws IOException {
-//        BufferedWriter writer = new BufferedWriter(new FileWriter(outputFile));
         writer.newLine();
         writer.write("~~ Results ~~");
         writer.newLine();
@@ -293,7 +294,7 @@ public class Game {
         }
         writer.close();
     }
-
+    // function to write the start of a round
     private void writeStartOfRound(final BufferedWriter writer, final int round)
             throws IOException {
         if (round > 1) {

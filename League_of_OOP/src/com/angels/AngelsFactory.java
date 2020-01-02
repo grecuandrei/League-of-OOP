@@ -1,5 +1,5 @@
 package angels;
-
+// Implementation of the factory to create the angels
 public class AngelsFactory {
     public final Angel getAngel(final String angelName) {
         switch (angelName) {

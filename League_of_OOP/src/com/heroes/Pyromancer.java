@@ -116,7 +116,7 @@ public class Pyromancer extends Hero {
             // CURRENT_HP < (1/4 * MAX_LEVEL_HP)
         } else if (getHp() < getBaseHP() / Constants.P_STRAT_LOW) {
             setStrategy(new Strategy2((float) (1 / Constants.P_STRAT_HIGH), Constants.MOD_03));
-        } else {
+        } else { // nothing changes
             setStrategy(new DefaultStrategy());
         }
     }

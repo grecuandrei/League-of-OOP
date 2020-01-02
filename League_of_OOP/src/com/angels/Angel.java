@@ -12,6 +12,8 @@ public abstract class Angel implements SubjectAngel {
     private String name;
     private int x, y, round;
     private Observer magician;
+    // to see if the angel is good or not, to help the magician
+    // decide whether he hit or helped a hero
     protected boolean isGood;
 
     public final String getName() {
@@ -57,10 +59,12 @@ public abstract class Angel implements SubjectAngel {
     public void apply(final Rogue r) { }
 
     public void apply(final Wizard w) { }
+    // methods that implement the Observer pattern
+    // to attach a observer, in our case the magician
     public final void attach(final Observer o) {
         magician = o;
     }
-
+    // to notify about the angel
     public final void notifyAngel() throws IOException {
         magician.update(this);
     }

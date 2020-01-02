@@ -19,7 +19,7 @@ public final class GreatMagician implements Observer {
         return instance;
     }
     /**
-     * This method is called whenever the observed object is changed. An
+     * This methods are called whenever the observed object is changed. An
      * application calls an {@code Observable} object's
      * {@code notifyObservers} method to have all the object's
      * observers notified of the change.

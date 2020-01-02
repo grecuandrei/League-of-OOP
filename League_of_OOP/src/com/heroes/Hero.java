@@ -263,6 +263,7 @@ public abstract class Hero implements SubjectHero {
             }
         }
     }
+    // methods that implement strategy pattern
     public final void doStrategy() {
         hs.modifyHero(this);
     }
@@ -270,32 +271,33 @@ public abstract class Hero implements SubjectHero {
         this.hs = s;
     }
     public void chooseStrategy() { }
-
+    // methods that implements observer pattern
+    // to attach a observer, in our case the magician
     @Override
     public final void attach(final Observer o) {
         magician = o;
     }
-
+    // to notify if a hero was hit/helped by an angel
     @Override
     public final void notifyHero(final Angel a) throws IOException {
         magician.updateHero(this, a);
     }
-
+    // to notify if a hero died by an angel
     @Override
     public final void notifyDeadHero() throws IOException {
         magician.updateDead(this);
     }
-
+    // to notify if a hero came to life
     @Override
     public final void notifyAliveHero() throws IOException {
         magician.updateAlive(this);
     }
-
+    // to notify died in a battle
     @Override
     public final void notifyDeadInCombat(final Hero h) throws IOException {
         magician.updateFight(this, h);
     }
-
+    // to notify if a hero leveled up
     @Override
     public final void notifyLevelUp() throws IOException {
         magician.updateLevelUp(this);
